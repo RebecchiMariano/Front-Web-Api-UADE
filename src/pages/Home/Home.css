@@ -1,0 +1,89 @@
+:root {
+  --home-maxw: 1150px;
+  --home-gap: 24px;
+  --home-primary: #2b6cb0; /* azul mock */
+  --home-panel: #e8f3ff;
+  --home-border: #d5e6f8;
+}
+
+.home { color: #0f172a; background: #fff; }
+.container { max-width: var(--home-maxw); margin: 0 auto; padding: 0 20px; }
+
+/* Hero */
+.hero { position: relative; }
+.hero__bg {
+  height: 360px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0) 60%, #ffffff 100%),
+    url('/Home/HomeBanner.jpg') center/cover no-repeat;
+}
+.hero__title {
+  position: relative;
+  margin: -90px auto 0; /* solapa el panel */
+  text-align: center;
+  font-weight: 900;
+  font-size: clamp(40px, 9vw, 96px);
+  letter-spacing: 2px;
+  color: var(--home-primary);
+  text-shadow: 0 2px 0 rgba(0,0,0,0.06);
+}
+.hero__title span { -webkit-text-stroke: 0 currentColor; }
+
+/* Panel global (como en Figma, una sola tarjeta grande) */
+.panel { padding: 0 0 40px; margin-top: -16px; }
+.panel__grid {
+  display: grid;
+  gap: 28px;
+  align-items: start;
+  background: var(--home-panel);
+  border-radius: 18px;
+  border: 1px solid var(--home-border);
+  box-shadow: 0 10px 24px rgba(15,23,42,.08);
+  padding: 26px;
+}
+.panel__left, .panel__right { background: transparent; padding: 0; }
+.panel__left h2, .panel__right h2 { margin: 0 0 16px; font-weight: 900; letter-spacing: .02em; }
+
+/* Productos 2x2 */
+.products { display: grid; grid-template-columns: 1fr; gap: var(--home-gap); margin: 0; padding: 0; list-style: none; }
+.product { display: grid; grid-template-columns: 200px 1fr; background: #f2f6fb; border-radius: 8px; overflow: hidden; border: 1px solid #dbe7f5; min-height: 150px; }
+.product__media { background: #0b0b0c; width: 100%; height: 100%; overflow: hidden; }
+.product__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.product__info { padding: 14px; display: flex; flex-direction: column; justify-content: center; }
+.product__title { margin: 0 0 6px; font-size: 18px; font-weight: 800; }
+.product__tag { margin: 0; color: #3b82f6; font-weight: 600; font-size: 13px; letter-spacing: .04em; }
+
+/* Categorías (texto simple como en Figma) */
+.tags { display: flex; flex-wrap: wrap; gap: 22px; margin: 20px 0 0; padding: 0; list-style: none; }
+.tag { color: #1f2937; text-decoration: none; font-weight: 700; letter-spacing: .02em; }
+.tag:hover { text-decoration: underline; }
+
+@media (min-width: 900px) {
+  .panel__grid { grid-template-columns: 2.2fr 1fr; }
+  .products { grid-template-columns: 1fr 1fr; }
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .hero__bg { height: 300px; }
+  .hero__title { font-size: clamp(32px, 11vw, 56px); margin-top: -70px; }
+  .panel__grid { padding: 18px; }
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .products { gap: 16px; }
+  .product { grid-template-columns: 120px 1fr; min-height: 120px; }
+  .product__info { padding: 10px; }
+  .product__title { font-size: 16px; }
+  .product__tag { font-size: 12px; }
+  .tags { gap: 14px; justify-content: center; }
+  .panel__grid { border-radius: 14px; }
+}
+
+@media (max-width: 420px) {
+  .hero__bg { height: 240px; }
+  .hero__title { margin-top: -48px; }
+  .product { grid-template-columns: 1fr; }
+  .product__media { height: 180px; }
+}
