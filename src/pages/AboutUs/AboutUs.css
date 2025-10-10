@@ -20,12 +20,12 @@ color: #0f172a;
 .about__content p { margin: 0; color: var(--muted); }
 
 .about__figure img {
-display: block;
-width: 100%;
-height: 320px;
-object-fit: cover;
-background: #ddd; /* placeholder si no hay imagen */
-border-radius: 10px;
+  display: block;
+  width: 100%;
+  height: auto;           /* mantiene proporción original */
+  object-fit: cover;      /* si el contenedor fuerza altura, no deforma */
+  background: #ddd;       /* placeholder si no hay imagen */
+  border-radius: 10px;
 }
 
 
