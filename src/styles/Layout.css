@@ -1,12 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
-  --home-maxw: 1140px;
+  /* COLORES */
   --home-primary: #2b6cb0;
   --home-panel-bg: #e6f1ff;
   --home-panel-border: #d2e4fa;
   --home-card-bg: #ffffff;
   --home-card-border: #dae6fb;
   --home-text: #0f172a;
+
+  /* BOX-SHADOWS */
+
+
+  
+  /* TIPOGRAFIAS */
   --karla: "Karla", sans-serif;
+
+
 }
+
+
+/* MEDIDAS  */
+
+/* 
+  TABLET 768PX
+  DESKTOP 1024PX
+*/
