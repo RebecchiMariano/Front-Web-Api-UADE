@@ -1,7 +1,9 @@
-import React from "react";
-import "../../styles/categorias/categorias.css";
+import {React, useState, useEffect} from "react";
 
-const Categorias = () => {
+import "../../styles/Productos/Productos.css";
+
+const Productos = () => {
+  const [productos, setProductos] = useState([]);
   return (
     <div>
       {/* HEADER */}
@@ -86,4 +88,4 @@ const Categorias = () => {
   );
 };
 
-export default Categorias;
+export default Productos;
