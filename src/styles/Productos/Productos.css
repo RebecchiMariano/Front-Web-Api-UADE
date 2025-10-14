@@ -131,9 +131,6 @@
   text-align: center;
 }
 
-/* ----------------------------------------------------
-   CORRECCIONES DE ADAPTABILIDAD (MEDIA QUERIES)
-   ---------------------------------------------------- */
 
 /* Media Query para tabletas (max-width: 768px / 48rem) */
 @media (max-width: 48rem) {
