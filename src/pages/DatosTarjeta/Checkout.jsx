@@ -1,5 +1,5 @@
 import React from "react";
-import "./checkout.css"; // importa tu CSS
+import "../../styles/Carrito/Checkout.css"; // importa tu CSS
 
 const Checkout = () => {
   return (

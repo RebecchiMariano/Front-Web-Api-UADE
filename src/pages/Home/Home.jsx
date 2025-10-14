@@ -1,5 +1,6 @@
-import './Home.css';
-
+import '../../styles/Home/Home.css';
+import '../../styles/Layout.css';
+import { Link } from 'react-router';
 const products = [
   {
     id: 'full-body',
@@ -72,9 +73,9 @@ export default function Home() {
               <ul className="tags" role="list">
                 {categories.map((category) => (
                   <li key={category}>
-                    <a href="#" className="tag">
+                    <Link href="#" className="tag">
                       {category}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
