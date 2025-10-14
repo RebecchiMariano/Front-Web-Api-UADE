@@ -1,0 +1,100 @@
+/* Reset básico para eliminar márgenes y paddings predeterminados */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.heather {
+    
+    flex-direction: column;
+    align-items: center; /* Centra los elementos horizontalmente */
+    justify-content: center; /* Centra los elementos verticalmente */
+    display: flex; /* Utiliza flexbox para centrar */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 50px; /* Define una altura para el contenedor */
+}
+
+/* Estilo general del cuerpo de la página */
+body {
+  font-family: Arial, sans-serif; /* Fuente básica */
+}
+
+/* banner */
+.banner{
+  height: 300px; /* Altura del área de búsqueda */
+  background-color: lightblue; /* Color de fondo */
+  display: flex; /* Organiza los elementos en columna */
+  flex-direction: column;
+  align-items: center; /* Centra los elementos horizontalmente */
+  justify-content: center; /* Centra los elementos verticalmente */
+}
+
+/* Rectángulo gris que contiene el formulario */
+.wide-gray {
+  background-color: lightgray; /* Color de fondo */
+  padding: 40px; /* Incrementa el espaciado interno */
+  margin: -50px auto; /* Incrementa el margen superior e inferior */
+  width: 95%; /* Ocupa el 90% del ancho de la página */
+  height:400px; /* Incrementa la altura del rectángulo */
+}
+
+/* Tarjeta blanca dentro del rectángulo gris */
+.card {
+  background-color: white; /* Color de fondo */
+  padding: 25px; /* Espaciado interno */
+  margin: 0 auto; /* Centrado horizontal */
+  width: 325px; /* Ancho fijo de la tarjeta */
+  position: relative; /* Permite ajustar la posición */
+  top: 30px; /* Desplaza hacia abajo para centrar verticalmente */
+}
+
+/* Título dentro de la tarjeta */
+.card h1 {
+  margin-bottom: 18px; /* Espaciado inferior del título */
+  color: blue;
+  
+}
+
+/* Campos del formulario */
+.field {
+  margin-bottom: 10px; /* Espaciado inferior entre los campos */
+}
+
+/* Etiqueta de los campos (Correo y Clave) */
+.field span {
+  display: inline-block; /* Asegura que se comporten como bloques en línea */
+  width: 80px; /* Ancho fijo de las etiquetas */
+}
+
+/* Estilo de los campos de entrada (Correo y Clave) */
+.field input {
+  padding: 5px; /* Espaciado interno */
+  width: calc(100% - 90px); /* Ajusta el ancho para que se alinee con las etiquetas */
+}
+
+/* Estilo de los botones */
+button {
+  margin-top: 10px; /* Espaciado superior entre los botones */
+  padding: 10px; /* Espaciado interno */
+  width: 100%; /* Ocupa todo el ancho disponible */
+}
+
+/* Estilo para el botón de ingresar como texto */
+button[type="submit"] {
+  background: none; /* Elimina el fondo del botón */
+  border: none; /* Elimina el borde del botón */
+  color: blue; /* Cambia el color del texto */
+  text-decoration: underline; /* Agrega subrayado al texto */
+  cursor: pointer; /* Cambia el cursor al estilo de enlace */
+  padding: 0; /* Elimina el espaciado interno */
+}
+
+/* Footer de la página */
+footer {
+  text-align: center; /* Centra el texto */
+  padding: 50px; /* Espaciado interno */
+  background-color: lightgray; /* Color de fondo */
+  margin-top: 80px; /* Espaciado superior para separarlo de la tarjeta gris */
+}
