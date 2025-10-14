@@ -1,4 +1,3 @@
-import '../../styles/Layout.css';
 import '../../styles/Home/Home.css';
 
 const products = [
