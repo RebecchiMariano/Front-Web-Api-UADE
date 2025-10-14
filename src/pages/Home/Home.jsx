@@ -37,19 +37,17 @@ export default function Home() {
   return (
     <main id="home" className="home">
       <section className="hero" aria-label="banner natacion">
-        <div className="hero__bg" />
-        <div className="container hero__inner">
+        <div className="hero__bg">
           <h1 className="hero__title">
             SWIMMING VIBES
           </h1>
-        </div>
+          </div>
       </section>
 
       <section className="panel" aria-labelledby="best-title">
-        <div className="container panel__grid">
           <div className="panel__left">
             <h2 id="best-title" className="panel__heading">
-              MAS VENDIDOS
+              Mas Vendidos
             </h2>
 
             <ul className="products" role="list">
@@ -70,9 +68,9 @@ export default function Home() {
 
           <aside className="panel__right" aria-labelledby="cat-title">
             <h2 id="cat-title" className="panel__heading">
-              CATEGORIAS
+              Nuestras Categorias
             </h2>
-            <nav aria-label="categorias destacadas">
+            <nav aria-label="categorias destacadas" className="categorias">
               <ul className="tags" role="list">
                 {categories.map((category) => (
                   <li key={category}>
@@ -82,7 +80,6 @@ export default function Home() {
               </ul>
             </nav>
           </aside>
-        </div>
       </section>
     </main>
   );
