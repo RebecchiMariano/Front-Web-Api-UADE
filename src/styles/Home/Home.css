@@ -1,13 +1,4 @@
-:root {
-  --home-maxw: 1140px;
-  --home-primary: #2b6cb0;
-  --home-panel-bg: #e6f1ff;
-  --home-panel-border: #d2e4fa;
-  --home-card-bg: #ffffff;
-  --home-card-border: #dae6fb;
-  --home-text: #0f172a;
-}
-
+@import url('../../styles/Layout.css');
 .home {
   color: var(--home-text);
   background: #ffffff;
