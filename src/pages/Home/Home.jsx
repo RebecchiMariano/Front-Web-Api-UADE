@@ -1,27 +1,27 @@
-import '../../styles/Home/Home.css';
 import '../../styles/Layout.css';
-import { Link } from 'react-router';
+import '../../styles/Home/Home.css';
+
 const products = [
   {
     id: 'full-body',
     title: 'FULL BODY',
     tag: 'MALLAS',
     image: '/Home/FullBody.jpg',
-    alt: 'Traje de baño modelo Full Body',
+    alt: 'Traje de bano modelo Full Body',
   },
   {
     id: 'first-aid',
     title: 'FIRST AID',
     tag: 'SALVAMENTO',
     image: '/Home/FirstAidKit.jpg',
-    alt: 'Kit de primeros auxilios para natación',
+    alt: 'Kit de primeros auxilios para natacion',
   },
   {
     id: 'swim-cap',
     title: 'SWIM CAP',
     tag: 'ACCESORIOS',
     image: '/Home/SwimCap.jpg',
-    alt: 'Gorra de natación Swim Cap',
+    alt: 'Gorra de natacion Swim Cap',
   },
   {
     id: 'swim-gg2',
@@ -37,11 +37,11 @@ const categories = ['MALLAS', 'ANTIPARRAS', 'ACCESORIOS', 'SALVAMENTO'];
 export default function Home() {
   return (
     <main id="home" className="home">
-      <section className="hero" aria-label="Hero swimming">
+      <section className="hero" aria-label="banner natacion">
         <div className="hero__bg" />
-        <div className="container">
+        <div className="container hero__inner">
           <h1 className="hero__title">
-            <span>SWIMMING</span> VIBES
+            SWIMMING VIBES
           </h1>
         </div>
       </section>
@@ -49,33 +49,35 @@ export default function Home() {
       <section className="panel" aria-labelledby="best-title">
         <div className="container panel__grid">
           <div className="panel__left">
-            <h2 id="best-title">MAS VENDIDOS</h2>
+            <h2 id="best-title" className="panel__heading">
+              MAS VENDIDOS
+            </h2>
 
             <ul className="products" role="list">
               {products.map((product) => (
                 <li key={product.id} className="product">
                   <figure className="product__media">
-                    <img src={product.image} alt={product.alt} />
+                    <img src={product.image} alt={product.alt} loading="lazy" />
                   </figure>
 
-                  <div className="product__info">
-                    <h3 className="product__title">{product.title}</h3>
-                    <p className="product__tag">{product.tag}</p>
-                  </div>
+                    <div className="product__info">
+                      <h3 className="product__title">{product.title}</h3>
+                      <p className="product__tag">{product.tag}</p>
+                    </div>
                 </li>
               ))}
             </ul>
           </div>
 
           <aside className="panel__right" aria-labelledby="cat-title">
-            <h2 id="cat-title">CATEGORIAS</h2>
-            <nav aria-label="categorias">
+            <h2 id="cat-title" className="panel__heading">
+              CATEGORIAS
+            </h2>
+            <nav aria-label="categorias destacadas">
               <ul className="tags" role="list">
                 {categories.map((category) => (
                   <li key={category}>
-                    <Link href="#" className="tag">
-                      {category}
-                    </Link>
+                    <span className="tag">{category}</span>
                   </li>
                 ))}
               </ul>
