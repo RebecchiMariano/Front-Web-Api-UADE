@@ -1,0 +1,144 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #f3f9ff;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+#main-header {
+  position: relative;
+  z-index: 10;
+  background-color: #003366;
+  color: white;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BANNER */
+.banner {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+  z-index: 1;
+}
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.contenedor-principal {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  margin-top: -100px; /* hace que pise el banner */
+  padding-bottom: 60px;
+}
+
+.lista-productos {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  display: flex;
+  width: 90%;
+  max-width: 1400px;
+  padding: 30px;
+}
+
+/* FILTRO IZQUIERDO */
+.filtro {
+  width: 25%;
+  background-color: #e6f1ff;
+  border-radius: 10px;
+  padding: 20px;
+  height: fit-content;
+}
+
+.filtro ul {
+  list-style: none;
+  padding: 0;
+}
+
+.precio-filtro input {
+  width: 80%;
+  margin-bottom: 10px;
+}
+
+/* PRODUCTOS */
+.productos {
+  flex: 1;
+  padding-left: 30px;
+}
+
+.productos h2 {
+  margin-top: 0;
+}
+
+.buscador {
+  width: 50%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+/* CARDS */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.card {
+  background-color: #e6f1ff;
+  border-radius: 10px;
+  text-align: center;
+  padding: 100px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* PAGINACIÓN */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.paginacion button {
+  border: none;
+  background: #c9e0ff;
+  border-radius: 5px;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+/* FOOTER */
+.footer {
+  background-color: #003366;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 25px 0;
+  font-size: 14px;
+}
+.footer-section {
+  text-align: center;
+}
