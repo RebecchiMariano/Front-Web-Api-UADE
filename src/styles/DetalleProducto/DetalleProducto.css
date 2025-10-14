@@ -1,21 +1,22 @@
-/* Base y reset */
+@import url('./Layout.css');
+
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background-color: #f0f4fa; /* Fondo general liso */
+  background-color: #f0f4fa;
   color: #1a1a1a;
 }
 
-/* Header/Menú */
 .header-placeholder {
-  height: 60px;
+  height: 30rem;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 0 20px;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  padding: 0 10rem;
 }
 
 .header-content {
-  max-width: 1200px;
+  max-width: 600rem;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -26,69 +27,61 @@ body {
 .header-content a {
   text-decoration: none;
   color: #333;
-  padding: 0 15px;
+  padding: 0 7.5rem;
 }
 
 .logo-area {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 
 .logo-cube {
-    width: 30px;
-    height: 30px;
-    background-color: #003366; /* Color del cubo simulando logo */
-    border-radius: 5px;
+  width: 15rem;
+  height: 15rem;
+  background-color: #003366;
+  border-radius: 2.5rem;
 }
 
 .header-icons .icon {
-  margin-left: 15px;
+  margin-left: 7.5rem;
   font-size: 1.2em;
   cursor: pointer;
 }
 
-/* Banner: Ahora contiene la imagen del nadador y es el fondo de la parte superior */
 .banner {
   width: 100%;
-  height: 250px; /* Altura que tendrá el banner visible */
+  height: 125rem;
   background: url('https://via.placeholder.com/1600x400/0073e6/FFFFFF?text=Fondo+Nadador') center/cover no-repeat;
   position: relative;
 }
 
-/* Contenedor principal que agrupa la tarjeta de detalle y los relacionados */
 .product-card-wrapper {
-  max-width: 1200px;
+  max-width: 600rem;
   margin: 0 auto;
-  padding: 0 20px;
-  position: relative; 
-  margin-top: -150px; /* Sube la tarjeta para superponerse al banner */
-  /* NO HAY MARGEN ENTRE product-card y product-recommendations */
+  padding: 0 10rem;
+  position: relative;
+  margin-top: -75rem;
 }
 
-/* Cubo A: Detalle del Producto */
 .product-card {
   display: flex;
-  background-color: #FFFFFF; /* Fondo Blanco para destacar sobre el banner/fondo */
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px; /* Separación clara entre el cubo de detalle y el cubo de relacionados */
+  background-color: #FFFFFF;
+  padding: 12.5rem;
+  border-radius: 5rem;
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.1);
+  margin-bottom: 10rem;
 }
 
-/* ----------------------- CUBOS SIMULANDO IMÁGENES ----------------------- */
-/* Estilo base para los cubos */
 .image-cube {
-    background-color: #000000; /* Cubo negro como la imagen de referencia */
-    border-radius: 10px;
+  background-color: #000000;
+  border-radius: 5rem;
 }
 
-/* Cubo de la Imagen Principal */
 .main-image-cube {
-    width: 100%;
-    height: 300px; /* Altura para el cubo principal */
-    display: block;
+  width: 100%;
+  height: 150rem;
+  display: block;
 }
 
-/* Miniaturas */
 .product-images {
   flex: 0 0 45%;
   margin-right: 5%;
@@ -96,24 +89,21 @@ body {
 
 .thumbnails {
   display: flex;
-  margin-top: 15px;
-  gap: 10px;
+  margin-top: 7.5rem;
+  gap: 5rem;
 }
 
 .thumbnail-cube {
-    width: 80px;
-    height: 60px;
-    cursor: pointer;
-    border: 2px solid transparent;
+  width: 40rem;
+  height: 30rem;
+  cursor: pointer;
+  border: 1rem solid transparent;
 }
 
 .thumbnail-cube:hover {
-    border-color: #0073e6;
+  border-color: #0073e6;
 }
-/* ------------------------------------------------------------------------- */
 
-
-/* Sección de Información (Derecha) */
 .product-info {
   flex: 1;
   display: flex;
@@ -121,135 +111,129 @@ body {
 }
 
 .product-info .title {
-  margin: 0 0 5px 0;
-  font-size: 32px;
+  margin: 0 0 2.5rem 0;
+  font-size: 16rem;
   color: #003366;
   font-weight: bold;
 }
 
 .product-info .subtitle {
-  margin: 0 0 20px 0;
-  font-size: 14px;
+  margin: 0 0 10rem 0;
+  font-size: 7rem;
   color: #333;
 }
 
 .characteristics {
-  margin: 15px 0 25px 0;
-  padding: 10px 0;
-  font-size: 16px;
-  border-top: 1px solid #cce0ff;
+  margin: 7.5rem 0 12.5rem 0;
+  padding: 5rem 0;
+  font-size: 8rem;
+  border-top: 0.5rem solid #cce0ff;
 }
 
 .detail-line {
-  margin: 5px 0;
+  margin: 2.5rem 0;
   font-weight: bold;
 }
 
-/* Rectángulo de Precio */
 .price-box {
-  background-color: #e6efff; /* Fondo azul claro como la referencia */
-  padding: 20px;
-  border-radius: 8px;
+  background-color: #e6efff;
+  padding: 10rem;
+  border-radius: 4rem;
   text-align: center;
   margin-top: auto;
 }
 
 .price {
   display: block;
-  font-size: 28px;
+  font-size: 14rem;
   font-weight: bold;
   color: #003366;
-  margin-bottom: 5px;
+  margin-bottom: 2.5rem;
 }
 
 .price-message {
-  font-size: 12px;
+  font-size: 6rem;
   color: #666;
 }
 
-
-/* Cubo B: Productos Relacionados */
 .product-recommendations {
-  background-color: #FFFFFF; /* Fondo Blanco para estar separado del detalle */
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  margin-bottom: 40px;
-  /* YA ESTÁ SEPARADO POR EL MARGEN DEL product-card */
+  background-color: #FFFFFF;
+  padding: 10rem;
+  border-radius: 5rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rem;
 }
 
 .related-list {
   display: flex;
   justify-content: space-around;
-  gap: 15px;
+  gap: 7.5rem;
   overflow-x: auto;
-  padding: 10px 0;
+  padding: 5rem 0;
 }
 
 .related-item {
-  min-width: 180px;
+  min-width: 90rem;
   text-align: center;
 }
 
-/* Cubo simulando imagen de producto relacionado */
 .related-image-cube {
   width: 100%;
-  height: 120px; /* Altura para el cubo de relacionados */
-  background-color: #003366; /* Color azul oscuro simulando imagen */
-  border-radius: 5px;
+  height: 60rem;
+  background-color: #003366;
+  border-radius: 2.5rem;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 2.5rem;
 }
 
-/* Footer (Tres columnas) */
 footer {
   background-color: #dbeaff;
-  padding: 20px 0;
+  padding: 10rem 0;
   color: #1a1a1a;
   display: flex;
   justify-content: space-around;
   text-align: center;
-  border-top: 1px solid #cce0ff;
+  border-top: 0.5rem solid #cce0ff;
 }
 
 .footer-section {
-    flex: 1;
-    max-width: 300px;
-    padding: 0 15px;
+  flex: 1;
+  max-width: 150rem;
+  padding: 0 7.5rem;
 }
 
 .footer-section h3 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #003366;
-    margin-bottom: 10px;
+  margin-top: 0;
+  font-size: 9rem;
+  color: #003366;
+  margin-bottom: 5rem;
 }
 
 .copyright-section {
-    border-left: 1px solid #cce0ff;
-    border-right: 1px solid #cce0ff;
+  border-left: 0.5rem solid #cce0ff;
+  border-right: 0.5rem solid #cce0ff;
 }
 
 .email-input {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: 4rem 7.5rem;
+  border-radius: 10rem;
+  font-size: 7rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
 }
 
 .email-input .send-icon {
-    margin-left: auto;
-    cursor: pointer;
-    font-weight: bold;
-    color: #0073e6;
+  margin-left: auto;
+  cursor: pointer;
+  font-weight: bold;
+  color: #0073e6;
 }
 
 .contact-icons .icon {
-    font-size: 1.5em;
-    margin: 0 10px;
-    cursor: pointer;
+  font-size: 1.5em;
+  margin: 0 5rem;
+  cursor: pointer;
 }

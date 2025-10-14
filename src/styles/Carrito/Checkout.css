@@ -1,3 +1,5 @@
+@import url('./Layout.css');
+
 /* Reset básico */
 * {
   margin: 0;
@@ -5,104 +7,97 @@
   box-sizing: border-box;
 }
 
-
-
 .page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Barra de búsqueda */
 .search-bar {
-  height: 60px;
+  height: 30rem;
   background-color: #eaeaea;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Contenedor principal del checkout */
 .checkout-container {
   flex: 1;
-  padding: 20px;
+  padding: 10rem;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10rem;
 }
 
-/* Rectángulo superior con el total a pagar */
 .summary {
-  background-color: #fff; /* Color de fondo */
-  padding: 20px; /* Espaciado interno */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
-  width: 70%; /* Reduce el ancho para dejar espacio en los costados */
-  margin: 0 auto; /* Centra el rectángulo horizontalmente */
+  background-color: #fff;
+  padding: 10rem;
+  border-radius: 4rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  width: 70%;
+  margin: 0 auto;
 }
 
 .summary h2 {
-  margin-bottom: 10px;
-  font-size: 18px;
+  margin-bottom: 5rem;
+  font-size: 9rem;
   font-weight: bold;
 }
 
 .summary .total p {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: 2.5rem;
 }
 
 .summary .total p span {
   font-weight: bold;
 }
 
-/* Rectángulo inferior con el formulario */
 .form-container {
-  background-color: #fff; /* Color de fondo */
-  padding: 20px; /* Espaciado interno */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
-  width: 70%; /* Reduce el ancho para dejar espacio en los costados */
-  margin: 0 auto; /* Centra el formulario horizontalmente */
+  background-color: #fff;
+  padding: 10rem;
+  border-radius: 4rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  width: 70%;
+  margin: 0 auto;
 }
 
 .form-container h2 {
-  margin-bottom: 10px;
-  font-size: 18px;
+  margin-bottom: 5rem;
+  font-size: 9rem;
   font-weight: bold;
 }
 
 .form-section {
-  margin-bottom: 20px;
+  margin-bottom: 10rem;
 }
 
 .form-section h3 {
-  margin-bottom: 10px;
-  font-size: 16px;
+  margin-bottom: 5rem;
+  font-size: 8rem;
   font-weight: bold;
 }
 
 form label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 5rem;
 }
 
 form input {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 4rem;
+  border: 0.5rem solid #ccc;
+  border-radius: 2rem;
 }
 
 hr {
-  border: none; /* Elimina el borde predeterminado */
-  border-top: 1px solid #ccc; /* Línea gris fina */
-  margin: 20px 0; /* Espaciado superior e inferior */
-  width: 100%; /* La línea ocupa todo el ancho del rectángulo */
+  border: none;
+  border-top: 0.5rem solid #ccc;
+  margin: 10rem 0;
+  width: 100%;
 }
 
-/* Botón de confirmar compra */
 .confirm-button {
   text-align: center;
 }
@@ -111,10 +106,10 @@ hr {
   background-color: #007bff;
   color: #fff;
   border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
+  padding: 5rem 10rem;
+  border-radius: 2rem;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 8rem;
 }
 
 .confirm-button button:hover {
