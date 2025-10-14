@@ -26,7 +26,7 @@ const products = [
     id: 'swim-gg2',
     title: 'SWIM GG 2',
     tag: 'ANTIPARRAS',
-    image: '/Home/SwimGg2.png',
+    image: '/Home/SwimGG2.png',
     alt: 'Antiparras modelo Swim GG 2',
   },
 ];
