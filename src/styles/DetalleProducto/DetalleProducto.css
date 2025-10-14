@@ -1,0 +1,289 @@
+@import url('./Layout.css');
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #f0f4fa;
+  color: #1a1a1a;
+}
+
+.header-placeholder {
+  height: 3.75rem;
+  background-color: #ffffff;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+  padding: 0 1.25rem;
+}
+
+.header-content {
+  max-width: 75rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.header-content a {
+  text-decoration: none;
+  color: #333;
+  padding: 0 0.9375rem;
+}
+
+.logo-area {
+  margin: 0 auto;
+}
+
+.logo-cube {
+  width: 1.875rem;
+  height: 1.875rem;
+  background-color: #003366;
+  border-radius: 0.3125rem;
+}
+
+.header-icons .icon {
+  margin-left: 0.9375rem;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.banner {
+  width: 100%;
+  height: 15.625rem;
+  background: url('https://via.placeholder.com/1600x400/0073e6/FFFFFF?text=Fondo+Nadador') center/cover no-repeat;
+  position: relative;
+}
+
+.product-card-wrapper {
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  position: relative;
+  margin-top: -9.375rem;
+}
+
+/* ----------------------------------------------------
+   ELEMENTO CLAVE PARA RESPONSIVIDAD (product-card)
+   ---------------------------------------------------- */
+.product-card {
+  display: flex; /* Flexbox para escritorio (lado a lado) */
+  background-color: #FFFFFF;
+  padding: 1.5625rem;
+  border-radius: 0.625rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.25rem;
+}
+
+.image-cube {
+  background-color: #000000;
+  border-radius: 0.625rem;
+}
+
+.main-image-cube {
+  width: 100%;
+  height: 18.75rem;
+  display: block;
+}
+
+.product-images {
+  flex: 0 0 45%; /* Ocupa 45% en escritorio */
+  margin-right: 5%;
+}
+
+.thumbnails {
+  display: flex;
+  margin-top: 0.9375rem;
+  gap: 0.625rem;
+}
+
+.thumbnail-cube {
+  width: 5rem;
+  height: 3.75rem;
+  cursor: pointer;
+  border: 0.125rem solid transparent;
+}
+
+.thumbnail-cube:hover {
+  border-color: #0073e6;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-info .title {
+  margin: 0 0 0.3125rem 0;
+  font-size: 2rem;
+  color: #003366;
+  font-weight: bold;
+}
+
+.product-info .subtitle {
+  margin: 0 0 1.25rem 0;
+  font-size: 0.875rem;
+  color: #333;
+}
+
+.characteristics {
+  margin: 0.9375rem 0 1.5625rem 0;
+  padding: 0.625rem 0;
+  font-size: 1rem;
+  border-top: 0.0625rem solid #cce0ff;
+}
+
+.detail-line {
+  margin: 0.3125rem 0;
+  font-weight: bold;
+}
+
+.price-box {
+  background-color: #e6efff;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-top: auto;
+}
+
+.price {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #003366;
+  margin-bottom: 0.3125rem;
+}
+
+.price-message {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.product-recommendations {
+  background-color: #FFFFFF;
+  padding: 1.25rem;
+  border-radius: 0.625rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+  margin-bottom: 2.5rem;
+}
+
+.related-list {
+  display: flex;
+  justify-content: space-around;
+  gap: 0.9375rem;
+  overflow-x: auto; /* Permite desplazamiento horizontal en móviles */
+  padding: 0.625rem 0;
+}
+
+.related-item {
+  min-width: 11.25rem; /* El ancho mínimo hace que el desplazamiento sea necesario */
+  text-align: center;
+}
+
+.related-image-cube {
+  width: 100%;
+  height: 7.5rem;
+  background-color: #003366;
+  border-radius: 0.3125rem;
+  display: block;
+  margin-bottom: 0.3125rem;
+}
+
+footer {
+  background-color: #dbeaff;
+  padding: 1.25rem 0;
+  color: #1a1a1a;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  border-top: 0.0625rem solid #cce0ff;
+}
+
+.footer-section {
+  flex: 1;
+  max-width: 18.75rem;
+  padding: 0 0.9375rem;
+}
+
+.footer-section h3 {
+  margin-top: 0;
+  font-size: 1.125rem;
+  color: #003366;
+  margin-bottom: 0.625rem;
+}
+
+.copyright-section {
+  border-left: 0.0625rem solid #cce0ff;
+  border-right: 0.0625rem solid #cce0ff;
+}
+
+.email-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: 0.5rem 0.9375rem;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+}
+
+.email-input .send-icon {
+  margin-left: auto;
+  cursor: pointer;
+  font-weight: bold;
+  color: #0073e6;
+}
+
+.contact-icons .icon {
+  font-size: 1.5em;
+  margin: 0 0.625rem;
+  cursor: pointer;
+}
+
+/* ----------------------------------------------------
+   REGLAS DE ADAPTABILIDAD
+   ---------------------------------------------------- */
+
+/* Media Query para teléfonos móviles (max-width: 576px / 36rem) */
+@media (max-width: 36rem) {
+    .product-card-wrapper {
+        padding: 0 0.625rem; /* Menos padding lateral */
+    }
+
+    /* Hace que la imagen y la info se apilen verticalmente */
+    .product-card {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    /* La sección de imágenes ocupa todo el ancho */
+    .product-images {
+        flex: 1;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 1rem; /* Separa la imagen de la info */
+    }
+
+    /* Los títulos y la fuente son más pequeños para adaptarse */
+    .product-info .title {
+        font-size: 1.5rem;
+    }
+
+    /* Hace que las miniaturas sean un poco más pequeñas */
+    .thumbnail-cube {
+        width: 4rem;
+        height: 3rem;
+    }
+    
+    /* Footer se apila en vertical */
+    footer {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.25rem 0;
+    }
+
+    .footer-section {
+        max-width: none;
+        padding: 0 1rem;
+    }
+}

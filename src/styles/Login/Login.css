@@ -1,4 +1,5 @@
-/* Reset básico para eliminar márgenes y paddings predeterminados */
+@import url('./Layout.css');
+
 * {
   margin: 0;
   padding: 0;
@@ -6,92 +7,77 @@
 }
 
 .heather {
-    
-    flex-direction: column;
-    align-items: center; /* Centra los elementos horizontalmente */
-    justify-content: center; /* Centra los elementos verticalmente */
-    display: flex; /* Utiliza flexbox para centrar */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    height: 50px; /* Define una altura para el contenedor */
-}
-
-
-
-/* banner */
-.banner{
-  height: 300px; /* Altura del área de búsqueda */
-  background-color: lightblue; /* Color de fondo */
-  display: flex; /* Organiza los elementos en columna */
   flex-direction: column;
-  align-items: center; /* Centra los elementos horizontalmente */
-  justify-content: center; /* Centra los elementos verticalmente */
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3.125rem; 
 }
 
-/* Rectángulo gris que contiene el formulario */
+.banner {
+  height: 18.75rem; 
+  background-color: lightblue;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .wide-gray {
-  background-color: lightgray; /* Color de fondo */
-  padding: 40px; /* Incrementa el espaciado interno */
-  margin: -50px auto; /* Incrementa el margen superior e inferior */
-  width: 95%; /* Ocupa el 90% del ancho de la página */
-  height:400px; /* Incrementa la altura del rectángulo */
+  background-color: lightgray;
+  padding: 2.5rem; 
+  margin: -3.125rem auto; 
+  height: 25rem; 
 }
 
-/* Tarjeta blanca dentro del rectángulo gris */
 .card {
-  background-color: white; /* Color de fondo */
-  padding: 25px; /* Espaciado interno */
-  margin: 0 auto; /* Centrado horizontal */
-  width: 325px; /* Ancho fijo de la tarjeta */
-  position: relative; /* Permite ajustar la posición */
-  top: 30px; /* Desplaza hacia abajo para centrar verticalmente */
+  background-color: white;
+  padding: 1.5625rem; 
+  margin: 0 auto;
+  width: 20.3125rem; 
+  position: relative;
+  top: 1.875rem; 
 }
 
-/* Título dentro de la tarjeta */
 .card h1 {
-  margin-bottom: 18px; /* Espaciado inferior del título */
+  margin-bottom: 1.125rem; 
   color: blue;
-  
 }
 
-/* Campos del formulario */
 .field {
-  margin-bottom: 10px; /* Espaciado inferior entre los campos */
+  margin-bottom: 0.625rem; 
 }
 
-/* Etiqueta de los campos (Correo y Clave) */
 .field span {
-  display: inline-block; /* Asegura que se comporten como bloques en línea */
-  width: 80px; /* Ancho fijo de las etiquetas */
+  display: inline-block;
+  width: 5rem; 
 }
 
-/* Estilo de los campos de entrada (Correo y Clave) */
 .field input {
-  padding: 5px; /* Espaciado interno */
-  width: calc(100% - 90px); /* Ajusta el ancho para que se alinee con las etiquetas */
+  padding: 0.3125rem; 
+  width: calc(100% - 5.625rem); 
 }
 
-/* Estilo de los botones */
 button {
-  margin-top: 10px; /* Espaciado superior entre los botones */
-  padding: 10px; /* Espaciado interno */
-  width: 100%; /* Ocupa todo el ancho disponible */
+  margin-top: 0.625rem; 
+  padding: 0.625rem;
+  width: 100%;
 }
 
-/* Estilo para el botón de ingresar como texto */
 button[type="submit"] {
-  background: none; /* Elimina el fondo del botón */
-  border: none; /* Elimina el borde del botón */
-  color: blue; /* Cambia el color del texto */
-  text-decoration: underline; /* Agrega subrayado al texto */
-  cursor: pointer; /* Cambia el cursor al estilo de enlace */
-  padding: 0; /* Elimina el espaciado interno */
+  background: none;
+  border: none;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
 }
 
-/* Footer de la página */
 footer {
-  text-align: center; /* Centra el texto */
-  padding: 50px; /* Espaciado interno */
-  background-color: lightgray; /* Color de fondo */
-  margin-top: 80px; /* Espaciado superior para separarlo de la tarjeta gris */
+  text-align: center;
+  padding: 3.125rem; 
+  background-color: lightgray;
+  margin-top: 5rem; 
 }

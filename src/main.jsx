@@ -6,7 +6,7 @@ import './index.css'
 import App from './App.jsx'
 import Home from './pages/Home/Home.jsx'
 import AboutUs from './pages/AboutUs/AboutUs.jsx'
-import Login from './pages/Login/Login.jsx';
+import Login from './pages/Login/Login.jsx'
 import Checkout from './pages/DatosTarjeta/Checkout.jsx'
 import Productos from './pages/Productos/Productos.jsx'
 
