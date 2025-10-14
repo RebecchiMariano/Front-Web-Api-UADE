@@ -8,6 +8,7 @@ import Home from './pages/Home/Home.jsx'
 import AboutUs from './pages/AboutUs/AboutUs.jsx'
 import Login from './pages/Login/Login.jsx';
 import Checkout from './pages/DatosTarjeta/Checkout.jsx'
+import Categorias from './pages/Categorias/categorias.jsx'
 
 
 createRoot(document.getElementById('root')).render(
