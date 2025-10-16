@@ -9,7 +9,7 @@ import AboutUs from './pages/AboutUs/AboutUs.jsx'
 import Login from './pages/Login/Login.jsx'
 import Checkout from './pages/DatosTarjeta/Checkout.jsx'
 import Productos from './pages/Productos/Productos.jsx'
-
+import HistorialVentas from './pages/Historial/HistorialVentas.jsx' // ✅ nueva página
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,9 +17,10 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/checkout' element={ <Checkout />} />
-        <Route path='/productos' element={ <Productos />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/productos" element={<Productos />} />
+        <Route path="/historial" element={<HistorialVentas />} /> {/* ✅ nueva ruta */}
       </Routes>
     </BrowserRouter>
   </StrictMode>

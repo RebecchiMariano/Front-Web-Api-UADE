@@ -1,0 +1,127 @@
+@import url('../../styles/Layout.css');
+
+
+:root {
+  --card-bg:#f7fbff;
+  --stroke:#d5e6ff;
+  --shadow:0 0.625rem 1.25rem rgba(0,0,0,.08);
+  --text:#0f172a;
+  --muted:#55627a;
+  --accent:#1f6feb;
+  --ok:#39b77d; --info:#6aa7ff; --warn:#f7b731;
+  --radius:1rem;
+  --maxw:67.5rem; /* 1080px */
+}
+
+/* mobile first */
+.historial { color:var(--text); background:#fff; min-height:100vh; }
+.historial__hero {
+  width:100%; height:11.5rem; /* más compacto en mobile */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(41,111,212,.20) 95%, #fff 100%),
+    url('/Home/swimmer-banner.webp') center/cover no-repeat;
+}
+
+.historial__card {
+  max-width:100%;
+  margin:-3.5rem auto 1rem;
+  padding:1rem;
+  background:#fff; border:1px solid var(--stroke);
+  border-radius:var(--radius); box-shadow:var(--shadow);
+}
+
+.historial__card__header {
+  display:flex; 
+  flex-direction:column; 
+  gap:.75rem;
+  align-items:stretch; 
+  justify-content:flex-start;
+  padding:0 .25rem .75rem;
+}
+.historial__card__header h1 { margin:0; font:800 1.25rem/1.2; }
+
+.search { position:relative; }
+.search input {
+  width:100%; 
+  padding:.625rem .875rem; 
+  font-size:.875rem;
+  border:1px solid var(--stroke); 
+  border-radius:1.5rem; 
+  outline:0; 
+  background:#f6f9ff;
+}
+.search input:focus { border-color:var(--accent); box-shadow:0 0 0 .1875rem rgba(31,111,235,.15); }
+
+/* Tabla: mobile-friendly (scroll horizontal) */
+.table-wrap { overflow:auto; }
+.history {
+  width:100%; 
+  min-width:36rem; /* fuerza scroll si es muy angosta */
+  border-collapse:separate; 
+  border-spacing:0;
+  background:#fff; 
+  border:1px solid var(--stroke); 
+  border-radius:.75rem;
+}
+.history th, .history td {
+  text-align:left; 
+  padding:.625rem .875rem; 
+  border-bottom:1px solid var(--stroke);
+  font-size:.875rem; 
+  white-space:nowrap;
+}
+.history thead th { 
+  color:var(--muted); 
+  font-weight:700; 
+  background:var(--card-bg); }
+.history tbody tr:last-child td { 
+  border-bottom:none; }
+.empty { 
+  text-align:center; 
+  color:var(--muted); 
+  padding:1rem; }
+
+.badge {
+  display:inline-block; 
+  padding:.375rem .625rem; 
+  border-radius:.625rem;
+  font-weight:700; 
+  font-size:.75rem; 
+  background:#eef2ff; 
+  border:1px solid var(--stroke);
+}
+.badge.success{ background:#eaf8f2; color:#0e7a4b; border-color:#bfead6; }
+.badge.info   { background:#e9f2ff; color:#1b63c6; border-color:#c6dcff; }
+.badge.warn   { background:#fff7e6; color:#9a6a00; border-color:#ffe2a8; }
+
+.historial__footer {
+  max-width:100%; 
+  margin:0 auto 1rem;
+  display:grid; 
+  grid-template-columns:1fr; 
+  gap:.75rem;
+  padding:.875rem .5rem; 
+  color:#1a1a1a; 
+  border-top:1px solid var(--stroke);
+  text-align:center;
+}
+
+/* ========== supera ≥ 768px ========== */
+@media (min-width:48rem) {
+  .historial__hero { height:15rem; }
+  .historial__card  { max-width:min(var(--maxw), 92%); margin:-4.5rem auto 1.25rem; padding:1.25rem; }
+  .historial__card__header { flex-direction:row; align-items:center; justify-content:space-between; }
+  .historial__card__header h1 { font-size:1.5rem; }
+  .historial__footer { max-width:min(var(--maxw), 92%); grid-template-columns:1fr 1fr 1fr; text-align:initial; }
+}
+
+/* ========== supera ≥ 900px ========== */
+@media (min-width:56.25rem) {
+  .historial__hero { height:18.75rem; }
+}
+
+/* ========== supera ≥ 1024px ========== */
+@media (min-width:64rem) {
+  .historial__card  { margin:-5rem auto 1.5rem; }
+  .history th, .history td { padding:.75rem 1rem; font-size:.875rem; }
+}
