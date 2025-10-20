@@ -1,0 +1,30 @@
+.aboutMain {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+}
+
+.info {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-flow: row wrap;
+    list-style: none;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: var(--light-blue-100);
+    box-shadow: var(--high-bs);
+    transform: translateY(-2rem);
+}
+
+.item{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: row wrap;
+    gap: .5rem;
+}
