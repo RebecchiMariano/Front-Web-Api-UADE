@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { Icon } from "@iconify/react";
-import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+
 
 import Style from "../../Styles/components/Header.module.css";
 import Search from "./Search";
@@ -115,28 +116,32 @@ const Header = () => {
   const [profile, setProfile] = useState("default");
   const user = useSelector((state) => state.user.value);
   const location = useLocation();
-  useEffect(() => {
-    // Obtener el token del localStorage
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setProfile("default");
-      return;
-    }
-    try {
-  const decoded = jwtDecode(token);
-      // Ajusta el nombre del campo según tu backend, por ejemplo decoded.role
-      const role = decoded.role || decoded.rol || decoded.authorities || "";
-      if (role === "ADMINISTRADOR") {
-        setProfile("administrador");
-      } else if (role === "COMPRADOR") {
-        setProfile("comprador");
-      } else {
-        setProfile("default");
-      }
-    } catch (err) {
+useEffect(() => {
+  if (!user?.accessToken) {
+    setProfile("default");
+    return;
+  }
+
+  try {
+    const decoded = jwtDecode(user.accessToken);
+
+    const roles = decoded?.roles || decoded?.authorities || [];
+    const role = Array.isArray(roles) ? roles[0] : roles;
+
+    if (role === "ROLE_ADMINISTRADOR") {
+      setProfile("administrador");
+    } else if (role === "ROLE_COMPRADOR") {
+      setProfile("comprador");
+    } else {
       setProfile("default");
     }
-  }, [user]);
+  } catch (err) {
+    console.error("Error al decodificar el token:", err.message);
+    setProfile("default");
+  }
+}, [user]);
+
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {

@@ -247,3 +247,78 @@
     gap: 0.5rem;
   }
 }
+
+/* Indicador de estado */
+.statusIndicator {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
+.statusIndicator.active {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.statusIndicator.inactive {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Producto inactivo */
+.inactiveProduct {
+  opacity: 0.7;
+  position: relative;
+}
+
+.inactiveProduct > figure > img {
+  filter: grayscale(50%);
+}
+
+/* Información de stock */
+.stockInfo {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.inactiveProduct .stockInfo {
+  color: #999;
+}
+
+/* Botones de activar/desactivar */
+.deactivateBtn {
+  background-color: var(--light-blue-50);
+  border: 0.25rem solid #ffc107;
+  color: #856404;
+}
+
+.deactivateBtn:hover {
+  background-color: #ffc107;
+  color: var(--light-blue-50);
+}
+
+.activateBtn {
+  background-color: var(--light-blue-50);
+  border: 0.25rem solid #28a745;
+  color: #155724;
+}
+
+.activateBtn:hover {
+  background-color: #28a745;
+  color: var(--light-blue-50);
+}
+
+/* Asegurar que los elementos tengan posición relativa para los indicadores absolutos */
+.products > ul > li {
+  position: relative;
+}

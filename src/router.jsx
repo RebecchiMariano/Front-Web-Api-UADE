@@ -17,6 +17,8 @@ import AdminProducts from "./Pages/Admin/Products";
 import AdminOrders from "./Pages/Admin/Orders";
 import AdminProductsCreate from "./Pages/Admin/ProductsCreate";
 import AdminProductsUpdate from "./Pages/Admin/ProductsUpdate";
+import Logout from "./Pages/Website/Logout";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -49,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "logout",
+        element: <Logout />,
       },
       {
         path: "user",
@@ -97,4 +103,5 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 export default router;

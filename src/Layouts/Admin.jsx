@@ -2,37 +2,48 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { jwtDecode } from "jwt-decode";
 
 const Admin = () => {
   const user = useSelector((state) => state.user.value);
-  const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
+  const [isChecking, setIsChecking] = useState(true);
+
   useEffect(() => {
-    const fetchProfile = async () => {
+    const checkAuth = () => {
+      setIsChecking(true);
+      
+      if (!user?.accessToken) {
+        navigate("/login");
+        return;
+      }
+
       try {
-        // const response = await fetch(`/api/usuario`);
-        // const data = await response.json();
-        setProfile("administrador");
+        const decoded = jwtDecode(user.accessToken);
+        const roles = decoded?.roles || decoded?.authorities || [];
+        
+        if (!roles.includes("ROLE_ADMINISTRADOR")) {
+          navigate("/");
+          return;
+        }
+        
+        // Si es admin, permitir acceso
+        setIsChecking(false);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error decoding token:", error);
+        navigate("/login");
       }
     };
-    if (!user || user === null) {
-      navigate("/login");
-    } else {
-      fetchProfile();
-    }
+
+    checkAuth();
   }, [user, navigate]);
-  useEffect(() => {
-    if (profile !== "administrador") {
-      navigate("/");
-    }
-  }, [profile, navigate]);
-  return (
-    <>
-      <Outlet />
-    </>
-  );
+
+  // Mientras verifica, muestra loading
+  if (isChecking) {
+    return <div>Cargando...</div>;
+  }
+
+  return <Outlet />;
 };
 
 export default Admin;

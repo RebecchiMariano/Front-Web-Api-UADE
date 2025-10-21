@@ -1,0 +1,145 @@
+.main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
+}
+
+.content {
+  width: calc(100% - 4rem);
+  max-width: 1280px;
+  min-height: 50dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column nowrap;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: var(--light-blue-100);
+  box-shadow: var(--high-bs);
+  transform: translateY(-2rem);
+  gap: 2rem;
+}
+
+.title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--blue-900);
+}
+
+.form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(auto, 1fr));
+  gap: 1rem;
+}
+
+.fieldset {
+  border: none;
+  outline: none;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+}
+.fieldset.column {
+  grid-column: span 1;
+}
+.fieldset.full {
+  grid-column: span 3;
+}
+.fieldset.buttons {
+  grid-column: span 3;
+  justify-content: center;
+  gap: 1rem;
+}
+.fieldset input {
+  flex: 1;
+  padding: 0.25rem;
+  outline: none;
+  border: none;
+}
+.fieldset label {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  color: var(--blue-900);
+}
+.fieldset label svg {
+  width: 2rem;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.button {
+  border: none;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+
+.button.password {
+  aspect-ratio: 1 / 1;
+  width: 2rem;
+  border: 0.25rem solid var(--light-blue-900);
+  color: var(--light-blue-900);
+  background-color: transparent;
+  border-radius: 50%;
+}
+
+.button.password:hover {
+  border-color: transparent;
+  background-color: var(--light-blue-900);
+  color: var(--light-blue-100);
+}
+
+.button.submit {
+  border: 0.25rem solid var(--light-blue-900);
+  color: var(--light-blue-900);
+  background-color: transparent;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1.25rem;
+  font-size: 1rem;
+}
+
+.button.submit:hover {
+  border-color: transparent;
+  background-color: var(--light-blue-900);
+  color: var(--light-blue-100);
+}
+
+.link {
+  text-align: center;
+  color: var(--blue-900);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.error {
+  width: 100%;
+  color: #e53935;
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (min-width: 768px) {
+  .content {
+    width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    width: calc(100% - 1rem);
+    padding-bottom: 1rem;
+  }
+}

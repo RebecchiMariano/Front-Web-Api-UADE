@@ -29,41 +29,36 @@ const list = [
     img: "/img/antiparras.jpg",
   },
 ];
+
 const Home = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(list);
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchCategorias = async () => {
       try {
-        // const response = await fetch("/api/products/offers");
-        // const data = await response.json();
-        const data = await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(list);
-          }, 1000);
-        });
-        setProducts(data);
-        setCategories([...new Set(data.map((item) => item.category))]);
+        const response = await fetch("http://localhost:8080/categorias/");
+        const data = await response.json();
+        const activas = data.filter((cat) => cat.estado === "ACTIVO");
+        setCategories(activas);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching categorías:", error);
       }
     };
-    fetchProducts();
+    fetchCategorias();
   }, []);
+
 
   return (
     <main className={Style.homeMain}>
       <Hero title="Swimming Vives" />
       <section className={Style.content}>
         <article className={Style.products}>
-          <h2>Mas Vendidos</h2>
+          <h2>Más Vendidos</h2>
           <ul>
             {products.map((item) => (
-              <li
-                key={item.id}
-                onClick={() => navigate(`/productos/${item.id}`)}
-              >
+              <li key={item.id} onClick={() => navigate(`/productos/${item.id}`)}>
                 <figure>
                   <img src={item.img} alt={item.name} />
                 </figure>
@@ -75,23 +70,26 @@ const Home = () => {
             ))}
           </ul>
         </article>
+
         <article className={Style.categories}>
-          <h2>Categorias</h2>
+          <h2>Categorías</h2>
           <nav>
-            {categories.map((item, index) => (
+            {categories.map((item) => (
               <Link
-                key={index}
+                key={item.nombre}
                 to={`/productos?${new URLSearchParams({
-                  category: item.toLowerCase(),
+                  category: item.nombre,
                 }).toString()}`}
               >
-                {item}
+                {item.nombre}
               </Link>
             ))}
           </nav>
         </article>
+
       </section>
     </main>
   );
 };
+
 export default Home;

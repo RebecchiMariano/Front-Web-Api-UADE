@@ -78,12 +78,14 @@ const Products = () => {
         // Fetch productos según la categoría seleccionada
         let response;
         if (category) {
+          // 👇 Buscar productos por nombre de categoría
           response = await fetch(`http://localhost:8080/productos/categoria/nombre/${encodeURIComponent(category)}`);
         } else if (search) {
           response = await fetch(`http://localhost:8080/productos/buscar?q=${encodeURIComponent(search)}`);
         } else {
           response = await fetch("http://localhost:8080/productos/todos");
         }
+
 
 
         const productos = await response.json();
@@ -142,7 +144,7 @@ const Products = () => {
             <h2>Productos</h2>
             <p>
               {search && `Resultados para "${search}"`}
-              {category && `Categoría "${categorias.find(cat => cat.id === category)?.nombre || 'Sin categoría'}"`}
+              {category && `Categoría "${categorias.find(cat => cat.nombre === category)?.nombre || 'Sin categoría'}"`}
             </p>
           </header>
           <ul>
@@ -152,11 +154,19 @@ const Products = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  navigate(`/productos/${producto.id}`);
+                  navigate(`/productos/${producto.name}`);
                 }}
               >
                 <figure>
-                  <img src={producto.img} alt={producto.name} />
+                  <img
+                    src={producto.img || "/img/default.jpg"}
+                    alt={producto.name}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/img/default.jpg";
+                    }}
+                  />
                 </figure>
                 <article>
                   <h3>{producto.name}</h3>
