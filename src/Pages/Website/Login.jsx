@@ -6,8 +6,8 @@ import { Link, useNavigate } from "react-router";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../Redux/Slices/user.js";
+import { useDispatch, useSelector } from "react-redux";
+import { authenticateUser, clearUser } from "../../Redux/Slices/user.js";
 const loginSchema = z.object({
   email: z
     .string({
@@ -31,6 +31,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { status, error } = useSelector((state) => state.user);
+
   const { register, handleSubmit, formState, setError } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -40,28 +42,13 @@ const Login = () => {
   });
 
   const access = async (data) => {
-    try {
-      const res = await fetch("/api/v1/auth/authenticate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+    const resultAction = await dispatch(authenticateUser(data));
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        let errorMsg = errorData.message || "Error de credenciales";
-        throw new Error(errorMsg);
-      }
-
-      const result = await res.json();
-      const accessToken = result.access_token;
-
-      if (accessToken) {
-        dispatch(setUser({ accessToken }));
-        navigate("/");
-      }
-    } catch (err) {
-      setError("root", { message: err.message });
+    if (authenticateUser.fulfilled.match(resultAction)) {
+      navigate("/");
+    } else {
+      const errorMsg = resultAction.payload || "Fallo en el servidor o red.";
+      setError("root", { message: errorMsg });
     }
   };
 
@@ -119,6 +106,20 @@ const Login = () => {
           {formState.errors?.password && (
             <output className={Style.error}>
               {formState.errors.password.message}
+            </output>
+          )}
+        </fieldset>
+        <fieldset className={Style.fieldsetButtons}>
+          <button
+            type="submit"
+            className={Style.buttonSubmit}
+            disabled={status === 'loading'} 
+          >
+            {status === 'loading' ? "Ingresando..." : "Ingresar"}
+          </button>
+          {(formState.errors?.root || status === 'failed') && (
+            <output className={Style.error}>
+              {formState.errors.root?.message || error}
             </output>
           )}
         </fieldset>

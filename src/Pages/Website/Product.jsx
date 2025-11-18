@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { useSelector } from "react-redux";
-import {jwtDecode} from "jwt-decode";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCartAsync } from "../../Redux/Slices/cart.js";
+import { jwtDecode } from "jwt-decode";
 import Style from "../../Styles/pages/Product.module.css";
 import Hero from "../../Components/shared/Hero.jsx";
 import Swal from 'sweetalert2';
@@ -12,9 +13,11 @@ const Product = () => {
     const [loading, setLoading] = useState(true);
     const [addingToCart, setAddingToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    
+
+    const cartStatus = useSelector((state) => state.cart.status);
     const user = useSelector((state) => state.user.value);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const money = new Intl.NumberFormat("es-AR", {
         style: "currency",
@@ -80,7 +83,6 @@ const Product = () => {
         fetchRelated();
     }, [producto]);
 
-    // Función para agregar al carrito
     const agregarAlCarrito = async () => {
         if (!user) {
             Swal.fire({
@@ -98,11 +100,10 @@ const Product = () => {
             return;
         }
 
-        // Verificar si el usuario tiene rol de comprador
         try {
             const decoded = jwtDecode(user.accessToken);
             const roles = decoded?.roles || [];
-            
+
             if (!roles.includes('ROLE_COMPRADOR')) {
                 Swal.fire({
                     title: 'Acceso denegado',
@@ -114,59 +115,45 @@ const Product = () => {
             }
         } catch (err) {
             console.error("Error al verificar roles:", err);
+            return;
         }
 
-        setAddingToCart(true);
-
-        try {
-            const carritoRequest = {
-                productoId: producto.id,
-                cantidad: quantity
-            };
-
-            const res = await fetch('http://localhost:8080/compras/carrito/agregar', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.accessToken}`
-                },
-                body: JSON.stringify(carritoRequest)
-            });
-
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(`Error ${res.status}: ${errorText}`);
+        const resultAction = await dispatch(addToCartAsync({
+            productoId: producto.id,
+            cantidad: quantity,
+            accessToken: user.accessToken,
+            productData: {
+                id: producto.id,
+                name: producto.nombre,
+                category: producto.categoria?.nombre,
+                price: producto.valor,
+                img: producto.foto
             }
+        }));
 
-            const compraActualizada = await res.json();
-            
+        if (addToCartAsync.fulfilled.match(resultAction)) {
             Swal.fire({
                 title: '¡Producto agregado!',
                 text: `"${producto.nombre}" se agregó al carrito correctamente`,
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
+        } else {
+            const errorMsg = resultAction.payload || resultAction.error.message || 'Error desconocido al agregar al carrito.';
+            console.error('Error al agregar al carrito:', errorMsg);
 
-            console.log('Carrito actualizado:', compraActualizada);
-
-        } catch (error) {
-            console.error('Error al agregar al carrito:', error);
-            
             Swal.fire({
                 title: 'Error',
-                text: 'No se pudo agregar el producto al carrito. Intenta nuevamente.',
+                text: errorMsg,
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
-        } finally {
-            setAddingToCart(false);
         }
     };
 
-    // Verificar si el usuario puede comprar (es comprador)
     const puedeComprar = () => {
         if (!user) return false;
-        
+
         try {
             const decoded = jwtDecode(user.accessToken);
             const roles = decoded?.roles || [];
@@ -176,6 +163,8 @@ const Product = () => {
             return false;
         }
     };
+
+    const isAddingToCart = cartStatus === 'loading';
 
     if (loading) return <p>Cargando...</p>;
     if (!producto) return <p>Producto no encontrado</p>;
@@ -208,17 +197,16 @@ const Product = () => {
                         <li>Estado: {producto.estado}</li>
                     </ul>
                     <h3 className={Style.price}>{money.format(producto.valor)}</h3>
-                    
-                    {/* Selector de cantidad y botón de agregar al carrito */}
+
                     {puedeComprar() && (
                         <div className={Style.cartActions}>
                             <div className={Style.quantitySelector}>
                                 <label htmlFor="quantity">Cantidad:</label>
-                                <select 
+                                <select
                                     id="quantity"
-                                    value={quantity} 
+                                    value={quantity}
                                     onChange={(e) => setQuantity(parseInt(e.target.value))}
-                                    disabled={addingToCart}
+                                    disabled={isAddingToCart}
                                 >
                                     {[...Array(Math.min(10, producto.cantidad || 1))].map((_, index) => (
                                         <option key={index + 1} value={index + 1}>
@@ -227,24 +215,22 @@ const Product = () => {
                                     ))}
                                 </select>
                             </div>
-                            
+
                             <button
                                 className={Style.buttonAddCart}
                                 type="button"
                                 onClick={agregarAlCarrito}
-                                disabled={addingToCart || producto.cantidad === 0}
+                                disabled={isAddingToCart || producto.cantidad === 0}
                             >
-                                {addingToCart ? 'Agregando...' : 'Agregar al carrito'}
+                                {isAddingToCart ? 'Agregando...' : 'Agregar al carrito'}
                             </button>
                         </div>
                     )}
 
-                    {/* Mensaje si no hay stock */}
                     {producto.cantidad === 0 && (
                         <p className={Style.outOfStock}>Producto sin stock</p>
                     )}
 
-                    {/* Mensaje si no es comprador */}
                     {user && !puedeComprar() && (
                         <p className={Style.notBuyer}>Solo los compradores pueden agregar productos al carrito</p>
                     )}

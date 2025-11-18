@@ -4,13 +4,15 @@ import Hero from "../../Components/shared/Hero.jsx";
 import { useNavigate, useLocation, Link } from "react-router";
 import { Icon } from "@iconify/react";
 import { useSelector, useDispatch } from "react-redux";
-import { add } from "../../Redux/Slices/cart.js";
+import { addToCartAsync } from "../../Redux/Slices/cart.js";
+import { fetchProducts } from "../../Redux/Slices/product.js";
 
 const Products = () => {
   const { user } = useSelector((state) => state.user);
   const items = useSelector((state) => state.cart.value);
+  const cartStatus = useSelector((state) => state.cart.status);
   const dispatch = useDispatch();
-  const [products, setProducts] = useState([]);
+  const { products, status, error } = useSelector((state) => state.product);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -28,8 +30,6 @@ const Products = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // const response = await fetch(`/api/usuario`);
-        // const data = await response.json();
         setProfile(user);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -55,61 +55,36 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const params = new URLSearchParams(location.search);
-        const search = params.get("search");
-        const categoryId = params.get("category");
-        let query = new URLSearchParams({ page });
+    const params = new URLSearchParams(location.search);
+    const currentSearch = params.get("search");
+    const categoryName = params.get("category");
 
-        if (search) {
-          query.set("search", search);
-          setSearch(search);
-        } else {
-          setSearch("");
-        }
+    setSearch(currentSearch || "");
+    setCategory(categoryName || "");
 
-        if (categoryId) {
-          setCategory(categoryId);
-        } else {
-          setCategory("");
-        }
-
-        // Fetch productos según la categoría seleccionada
-        let response;
-        if (category) {
-          // 👇 Buscar productos por nombre de categoría
-          response = await fetch(`http://localhost:8080/productos/categoria/nombre/${encodeURIComponent(category)}`);
-        } else if (search) {
-          response = await fetch(`http://localhost:8080/productos/buscar?q=${encodeURIComponent(search)}`);
-        } else {
-          response = await fetch("http://localhost:8080/productos/todos");
-        }
+    dispatch(fetchProducts({ category: categoryName, search: currentSearch }));
+  }, [location, dispatch]);
 
 
+  const handleAddToCart = (producto) => {
+    if (!user?.accessToken) {
+      console.warn("Usuario no autenticado. No se puede agregar al carrito.");
+      return;
+    }
 
-        const productos = await response.json();
-
-        // Mapeo para adaptar los datos al frontend
-        const mapped = productos.map((producto) => ({
-          id: producto.id,
-          name: producto.nombre,
-          category: producto.categoria?.nombre || "Sin categoría",
-          categoryId: producto.categoria?.id,
-          img: producto.foto || "/img/default.jpg",
-          price: producto.valor,
-          descripcion: producto.descripcion,
-          cantidad: producto.cantidad,
-          descuento: producto.descuento,
-        }));
-
-        setProducts(mapped);
-      } catch (error) {
-        console.error("Error fetching products:", error);
+    dispatch(addToCartAsync({
+      productoId: producto.id,
+      cantidad: 1,
+      accessToken: user.accessToken,
+      productData: {
+        id: producto.id,
+        name: producto.name,
+        category: producto.category,
+        price: producto.price,
+        img: producto.img
       }
-    };
-    fetchProducts();
-  }, [page, location]);
+    }));
+  };
 
   return (
     <main className={Style.productsMain}>
@@ -193,8 +168,9 @@ const Products = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        dispatch(add(producto));
+                        handleAddToCart(producto);
                       }}
+                      disabled={cartStatus === 'loading'}
                     >
                       <Icon icon="mdi:cart" />
                     </button>

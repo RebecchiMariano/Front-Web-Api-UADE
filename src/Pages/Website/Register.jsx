@@ -61,7 +61,7 @@ const Register = () => {
   });
   const save = async (data) => {
     try {
-      const res = await fetch("/api/v1/auth/register", {
+      const res = await fetch("/api/v1/auth/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, role: "COMPRADOR" }),
