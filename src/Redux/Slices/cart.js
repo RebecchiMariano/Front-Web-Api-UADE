@@ -15,9 +15,7 @@ export const fetchCartAsync = createAsyncThunk(
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const compras = await res.json();
       
-      // ANTES: const carritoActivo = compras.find(compra => compra.estado === 'PENDIENTE'); // FALLA aquí
-      
-      // SOLUCIÓN RAPIDA: Asumir el primer elemento es el carrito activo (si lo hay)
+
       const carritoActivo = (Array.isArray(compras) && compras.length > 0) ? compras[0] : null; 
       
       return carritoActivo || { items: [] }; 

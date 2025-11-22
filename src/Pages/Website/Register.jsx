@@ -26,7 +26,9 @@ const registerSchema = z.object({
       required_error: "Este campo es obligatorio",
       invalid_type_error: "Debes ingresar un dni válido",
     })
-    .min(8, { message: "Este campo debe tener al menos 8 digitos" })
+    // Ajustar la validación Zod al nuevo tamaño (7 a 11 dígitos, por ejemplo)
+    .min(7, { message: "Este campo debe tener al menos 7 digitos" })
+    .max(11, { message: "Este campo debe tener máximo 11 digitos" })
     .regex(/^\d+$/, { message: "Unicamente numeros por favor." }),
   email: z
     .string({
@@ -59,23 +61,68 @@ const Register = () => {
       password: "",
     },
   });
+
+  // En Register.jsx, en la función save
   const save = async (data) => {
     try {
+      // 1. Prepara los datos (manteniendo las correcciones de DNI y URL)
+      const registrationData = {
+        ...data,
+        dni: parseInt(data.dni, 10), // Aseguramos que se envía como número
+        role: "COMPRADOR",
+        estado: "ACTIVO"
+      };
+
+      // Usar la URL relativa que el proxy de Vite maneja
       const res = await fetch("/api/v1/auth/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, role: "COMPRADOR" }),
+        body: JSON.stringify(registrationData),
       });
+
+      // 2. Leer el cuerpo de la respuesta UNA SOLA VEZ
+      // Intentamos leer el cuerpo como JSON. Esto fallará si el cuerpo es un stream vacío o texto simple.
+      let resultData;
+      try {
+        resultData = await res.json();
+      } catch (e) {
+        // Si no se puede leer como JSON (ej. si es 400 con cuerpo vacío), usamos un objeto vacío.
+        resultData = {};
+      }
+
+      // 3. Manejar la respuesta (Exitosa vs. Error)
       if (!res.ok) {
-        const data = await res.json();
-        let errorMsg = data.message || "Error de credenciales";
+        // Fallo: El backend envió un 400, 500, etc.
+        // Intentamos obtener el mensaje de error del cuerpo leído.
+        let errorMsg = resultData.message || "Error desconocido al registrar.";
+        if (resultData.errors && resultData.errors.length > 0) {
+          errorMsg = resultData.errors.map(err => err.defaultMessage).join(', ');
+        }
         throw new Error(errorMsg);
       }
-      const { accessToken } = await res.json();
-      if (accessToken) {
-        dispatch(setUser(accessToken));
-        navigate("/");
+      const loginRes = await fetch("/api/v1/auth/authenticate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // Envía solo email y password para la autenticación
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      });
+
+      if (!loginRes.ok) {
+        throw new Error("Registro exitoso, pero el inicio de sesión automático falló.");
       }
+
+      // 2. Leer la respuesta del login (que contiene el token)
+      const loginData = await loginRes.json();
+      // Asume que el login devuelve { access_token: "..." }
+      const accessToken = loginData.access_token || loginData.accessToken;
+
+      if (accessToken) {
+        dispatch(setUser({ accessToken }));
+        navigate("/");
+      } else {
+        throw new Error("Registro exitoso, pero no se recibió el token de acceso.");
+      }
+
     } catch (err) {
       setError("root", { message: err.message });
     }

@@ -12,7 +12,7 @@ const Profile = () => {
     const [saving, setSaving] = useState(false);
     const [userOrders, setUserOrders] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(false);
-    
+
     const user = useSelector((state) => state.user.value);
 
     // Estado del formulario de edición
@@ -23,7 +23,6 @@ const Profile = () => {
         direccion: ""
     });
 
-    // Obtener datos del usuario
     useEffect(() => {
         const fetchUserData = async () => {
             if (!user?.accessToken) {
@@ -33,11 +32,14 @@ const Profile = () => {
 
             setLoading(true);
             try {
-                // Decodificar el token para obtener información básica
+                // 1. Decodificar el token para obtener el ID
                 const decoded = jwtDecode(user.accessToken);
+                // **ASUME que el ID está en 'id' o en 'sub' (email).**
+                const userEmail = decoded.sub;
+                if (!userEmail) throw new Error("Email de usuario no encontrado en el token.");
                 
-                // Intentar obtener datos completos del usuario desde el backend
-                const res = await fetch("http://localhost:8080/usuarios/me", {
+                // 2. Usar el endpoint GET /usuarios/{id}
+                const res = await fetch(`http://localhost:8080/usuarios/email/${userEmail}`, {
                     headers: {
                         'Authorization': `Bearer ${user.accessToken}`,
                         'Content-Type': 'application/json'
@@ -49,42 +51,31 @@ const Profile = () => {
                     setUserData(userDataFromApi);
                     setForm({
                         nombre: userDataFromApi.nombre || "",
-                        email: userDataFromApi.email || decoded.sub || "",
+                        email: userDataFromApi.email || userDataFromApi.mail || decoded.sub || "",
                         telefono: userDataFromApi.telefono || "",
                         direccion: userDataFromApi.direccion || ""
                     });
                 } else {
-                    // Si no hay endpoint específico, usar datos del token
                     setUserData({
-                        nombre: decoded.nombre || "Usuario",
+                        nombre: decoded.nombre || decoded.sub,
                         email: decoded.sub || "",
                         telefono: "",
                         direccion: ""
                     });
-                    setForm({
-                        nombre: decoded.nombre || "Usuario",
-                        email: decoded.sub || "",
-                        telefono: "",
-                        direccion: ""
-                    });
+                    setForm({ ...userData });
                 }
 
             } catch (error) {
                 console.error("Error al cargar datos del usuario:", error);
-                // Usar datos mínimos del token
+
                 const decoded = jwtDecode(user.accessToken);
                 setUserData({
-                    nombre: decoded.nombre || "Usuario",
+                    nombre: decoded.nombre || decoded.sub || "Usuario",
                     email: decoded.sub || "",
                     telefono: "",
                     direccion: ""
                 });
-                setForm({
-                    nombre: decoded.nombre || "Usuario",
-                    email: decoded.sub || "",
-                    telefono: "",
-                    direccion: ""
-                });
+                setForm({ ...userData });
             } finally {
                 setLoading(false);
             }
@@ -110,6 +101,7 @@ const Profile = () => {
                 const orders = await res.json();
                 // Filtrar solo órdenes confirmadas (excluir carrito pendiente)
                 const confirmedOrders = orders.filter(order => order.estado === 'CONFIRMADA');
+                console.log("Órdenes confirmadas del usuario:", confirmedOrders);
                 setUserOrders(confirmedOrders);
             }
         } catch (error) {
@@ -133,23 +125,39 @@ const Profile = () => {
     };
 
     // Guardar cambios del perfil
-    const handleSaveProfile = async () => {
+const handleSaveProfile = async () => {
         if (!user?.accessToken) return;
+
+        // 1. Obtener ID del usuario del token
+        const decoded = jwtDecode(user.accessToken);
+        const userId = decoded.id || decoded.sub; // Debe coincidir con el campo usado arriba
+
+        if (!userId) {
+            Swal.fire({ title: 'Error', text: 'No se pudo obtener el ID de usuario para actualizar.', icon: 'error' });
+            return;
+        }
 
         setSaving(true);
         try {
-            const res = await fetch("http://localhost:8080/usuarios/me", {
+            // 2. Usar el endpoint PUT /usuarios/editar/{id}
+            const res = await fetch(`http://localhost:8080/usuarios/editar/${userId}`, {
                 method: "PUT",
                 headers: {
                     'Authorization': `Bearer ${user.accessToken}`,
                     'Content-Type': 'application/json'
                 },
+                // El body (form) debe coincidir con el DTO UsuarioUpdateRequest esperado por el backend
                 body: JSON.stringify(form)
             });
 
-            if (!res.ok) throw new Error(`Error ${res.status}`);
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`Error ${res.status}: ${errorText}`);
+            }
 
             const updatedUser = await res.json();
+            
+            // Si la actualización fue exitosa, actualiza el estado del perfil
             setUserData(updatedUser);
             setEditing(false);
 
@@ -162,9 +170,11 @@ const Profile = () => {
 
         } catch (error) {
             console.error("Error al actualizar perfil:", error);
+            const errorMsg = error.message || 'Error desconocido al actualizar el perfil.';
+            
             Swal.fire({
                 title: 'Error',
-                text: 'No se pudo actualizar el perfil',
+                text: `No se pudo actualizar el perfil. Detalle: ${errorMsg}`,
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
@@ -196,14 +206,14 @@ const Profile = () => {
     // Obtener rol del usuario
     const getUserRole = () => {
         if (!user?.accessToken) return "Usuario";
-        
+
         try {
             const decoded = jwtDecode(user.accessToken);
             const roles = decoded?.roles || [];
-            
+
             if (roles.includes('ROLE_ADMINISTRADOR')) return "Administrador";
             if (roles.includes('ROLE_COMPRADOR')) return "Comprador";
-            
+
             return "Usuario";
         } catch (err) {
             return "Usuario";
@@ -265,7 +275,7 @@ const Profile = () => {
                     {/* Sección de información personal */}
                     <div className={Style.profileSection}>
                         <h2>Información Personal</h2>
-                        
+
                         {editing ? (
                             <div className={Style.editForm}>
                                 <div className={Style.formGroup}>
@@ -278,7 +288,7 @@ const Profile = () => {
                                         placeholder="Tu nombre completo"
                                     />
                                 </div>
-                                
+
                                 <div className={Style.formGroup}>
                                     <label>Email</label>
                                     <input
@@ -289,7 +299,7 @@ const Profile = () => {
                                         placeholder="tu@email.com"
                                     />
                                 </div>
-                                
+
                                 <div className={Style.formGroup}>
                                     <label>Teléfono</label>
                                     <input
@@ -300,7 +310,7 @@ const Profile = () => {
                                         placeholder="+54 11 1234-5678"
                                     />
                                 </div>
-                                
+
                                 <div className={Style.formGroup}>
                                     <label>Dirección</label>
                                     <textarea
@@ -311,7 +321,7 @@ const Profile = () => {
                                         rows="3"
                                     />
                                 </div>
-                                
+
                                 <div className={Style.formActions}>
                                     <button
                                         onClick={handleSaveProfile}
@@ -354,7 +364,7 @@ const Profile = () => {
                     {/* Sección de órdenes recientes */}
                     <div className={Style.profileSection}>
                         <h2>Mis Órdenes Recientes</h2>
-                        
+
                         {ordersLoading ? (
                             <div className={Style.loadingOrders}>Cargando órdenes...</div>
                         ) : userOrders.length > 0 ? (
@@ -367,11 +377,10 @@ const Profile = () => {
                                         </div>
                                         <div className={Style.orderDetails}>
                                             <span className={Style.orderTotal}>
-                                                Total: {money.format(order.valor)}
+                                                Total: {money.format(order.total || 0)}
                                             </span>
-                                            <span className={`${Style.orderStatus} ${
-                                                order.estado === 'CONFIRMADA' ? Style.confirmed : ''
-                                            }`}>
+                                            <span className={`${Style.orderStatus} ${order.estado === 'CONFIRMADA' ? Style.confirmed : ''
+                                                }`}>
                                                 {order.estado}
                                             </span>
                                         </div>
@@ -409,7 +418,7 @@ const Profile = () => {
                             </div>
                             <div className={Style.statItem}>
                                 <span className={Style.statNumber}>
-                                    {money.format(userOrders.reduce((total, order) => total + order.valor, 0))}
+                                    {money.format(userOrders.reduce((total, order) => total + (order.total || 0), 0))}
                                 </span>
                                 <span className={Style.statLabel}>Total Gastado</span>
                             </div>
