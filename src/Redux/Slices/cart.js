@@ -14,15 +14,19 @@ export const fetchCartAsync = createAsyncThunk(
 
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const compras = await res.json();
-
-      const carritoActivo = compras.find(compra => compra.estado === 'PENDIENTE');
-      return carritoActivo || { items: [] };
+      
+      // ANTES: const carritoActivo = compras.find(compra => compra.estado === 'PENDIENTE'); // FALLA aquí
+      
+      // SOLUCIÓN RAPIDA: Asumir el primer elemento es el carrito activo (si lo hay)
+      const carritoActivo = (Array.isArray(compras) && compras.length > 0) ? compras[0] : null; 
+      
+      return carritoActivo || { items: [] }; 
+      
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
-
 export const addToCartAsync = createAsyncThunk(
   'cart/addToCartAsync',
   async ({ productoId, cantidad, accessToken, productData }, { rejectWithValue, dispatch }) => {
@@ -119,7 +123,7 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCartAsync.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.value = action.payload.items;
+        state.value = action.payload?.items ?? [];
       })
       .addCase(fetchCartAsync.rejected, (state, action) => {
         state.status = 'failed';
@@ -140,15 +144,21 @@ const cartSlice = createSlice({
         state.error = action.payload;
       })
 
-      // --- 3. Handlers de Matcher (Deben ir siempre al final) ---
+      // --- 3. Handlers de Matcher ---
       .addMatcher(
         (action) => [updateCartItemAsync.pending.type, addToCartAsync.pending.type].includes(action.type),
         (state) => { state.status = 'loading'; }
       )
       .addMatcher(
+        (action) => [updateCartItemAsync.fulfilled.type, addToCartAsync.fulfilled.type].includes(action.type),
+        (state) => { state.status = 'succeeded'; state.error = null; }
+      )
+      .addMatcher(
         (action) => [updateCartItemAsync.rejected.type, addToCartAsync.rejected.type].includes(action.type),
         (state, action) => { state.status = 'failed'; state.error = action.payload; }
       );
+
+
   },
 });
 
