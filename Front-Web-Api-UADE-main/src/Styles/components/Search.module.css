@@ -1,0 +1,84 @@
+.searchForm {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+.fieldset {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-radius: 1rem;
+  height: 2rem;
+  border: none;
+  gap: 0.5rem;
+}
+.fieldset input {
+  outline: none;
+  font-size: 1rem;
+  background-color: transparent;
+  border: 0.1rem solid var(--blue-900);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1.25rem;
+}
+.submit {
+  height: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0.1rem solid var(--blue-900);
+  border-radius: 50%;
+  background-color: var(--blue-50);
+}
+.submit svg {
+  color: var(--blue-900);
+}
+.toggle {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.3rem;
+  border: 0.1rem solid var(--blue-900);
+  border-radius: 50%;
+  background-color: var(--blue-50);
+  transition: all 0.3s ease-in-out;
+}
+.toggle .icon {
+  color: var(--blue-900);
+}
+.toggle.open {
+  border-color: var(--red-900);
+  background-color: var(--red-50);
+}
+.toggle.open .icon {
+  color: var(--red-900);
+}
+
+@media (max-width: 768px) {
+  .fieldset {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100dvw;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    background-color: var(--blue-300);
+    border-radius: 1rem 1rem 0 0;
+  }
+  .submit {
+    height: 2rem;
+  }
+  .fieldset input {
+    border-radius: 1rem;
+    background-color: var(--blue-50);
+  }
+}
