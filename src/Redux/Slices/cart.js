@@ -8,27 +8,31 @@ export const fetchCartAsync = createAsyncThunk(
   'cart/fetchCart',
   async (accessToken, { rejectWithValue }) => {
     try {
-      const res = await fetch("http://localhost:8080/compras/", {
+      const res = await fetch("http://localhost:8080/compras/carrito-activo", {
         headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }
       });
 
       if (!res.ok) throw new Error(`Error ${res.status}`);
-      const compras = await res.json();
-      
 
-      const carritoActivo = (Array.isArray(compras) && compras.length > 0) ? compras[0] : null; 
-      
-      return carritoActivo || { items: [] }; 
-      
+      const carritoActivo = await res.json();
+
+      if (!carritoActivo || !carritoActivo.id) {
+        return { items: [] };
+      }
+
+      return carritoActivo;
+
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 export const addToCartAsync = createAsyncThunk(
   'cart/addToCartAsync',
-  async ({ productoId, cantidad, accessToken, productData }, { rejectWithValue, dispatch }) => {
+  async ({ productoId, cantidad, accessToken }, { rejectWithValue, dispatch }) => {
     try {
+
       const carritoRequest = { productoId: productoId, cantidad: cantidad };
 
       const res = await fetch('http://localhost:8080/compras/carrito/agregar', {
@@ -37,14 +41,17 @@ export const addToCartAsync = createAsyncThunk(
         body: JSON.stringify(carritoRequest)
       });
 
+
+
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`Error ${res.status}: ${errorText}`);
       }
 
-      await dispatch(fetchCartAsync(accessToken));
+      let cart = await dispatch(fetchCartAsync(accessToken));
+      console.log(cart);
 
-      return { product: productData, quantity: cantidad };
+      return { cart };
 
     } catch (error) {
       return rejectWithValue(error.message);
@@ -155,7 +162,6 @@ const cartSlice = createSlice({
         (action) => [updateCartItemAsync.rejected.type, addToCartAsync.rejected.type].includes(action.type),
         (state, action) => { state.status = 'failed'; state.error = action.payload; }
       );
-
 
   },
 });

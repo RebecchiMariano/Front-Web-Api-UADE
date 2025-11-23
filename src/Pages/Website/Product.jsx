@@ -121,14 +121,7 @@ const Product = () => {
         const resultAction = await dispatch(addToCartAsync({
             productoId: producto.id,
             cantidad: quantity,
-            accessToken: user.accessToken,
-            productData: {
-                id: producto.id,
-                name: producto.nombre,
-                category: producto.categoria?.nombre,
-                price: producto.valor,
-                img: producto.foto
-            }
+            accessToken: user.accessToken
         }));
 
         if (addToCartAsync.fulfilled.match(resultAction)) {

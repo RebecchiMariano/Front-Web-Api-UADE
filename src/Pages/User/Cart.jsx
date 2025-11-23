@@ -5,7 +5,7 @@ import Style from "../../Styles/pages/Cart.module.css";
 import Hero from "../../Components/shared/Hero";
 import Swal from 'sweetalert2';
 import { jwtDecode } from "jwt-decode";
-import { fetchCartAsync, updateCartItemAsync, checkoutAsync } from "../../Redux/Slices/cart";
+import { fetchCartAsync, updateCartItemAsync, checkoutAsync, clear } from "../../Redux/Slices/cart";
 
 const Cart = () => {
     const dispatch = useDispatch();
