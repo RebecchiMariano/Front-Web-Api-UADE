@@ -60,17 +60,24 @@ const Cart = () => {
         });
 
         if (!result.isConfirmed) return;
+        const cantidadAEnviar = -item.cantidad;
 
         const successMessage = `El producto ${item.productoNombre || 'el producto'} se eliminó del carrito`;
 
         const resultAction = await dispatch(updateCartItemAsync({
-            productoId: item.productoId || item.id,
-            cantidad: -item.cantidad,
+            productoId: item.productoId,
+            cantidad: cantidadAEnviar,
             accessToken: user.accessToken,
             successMessage: successMessage
         }));
 
         if (updateCartItemAsync.fulfilled.match(resultAction)) {
+            Swal.fire({
+                title: 'Eliminado',
+                text: successMessage,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
         } else {
             Swal.fire({ title: 'Error', text: 'No se pudo eliminar el producto', icon: 'error', confirmButtonText: 'OK' });
         }
