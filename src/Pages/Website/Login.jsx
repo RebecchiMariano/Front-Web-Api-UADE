@@ -123,20 +123,6 @@ const Login = () => {
             </output>
           )}
         </fieldset>
-        <fieldset className={Style.fieldsetButtons}>
-          <button
-            type="submit"
-            className={Style.buttonSubmit}
-            disabled={formState.isSubmitting}
-          >
-            {formState.isSubmitting ? "Ingresando..." : "Ingresar"}
-          </button>
-          {formState.errors?.root && (
-            <output className={Style.error}>
-              {formState.errors.root.message}
-            </output>
-          )}
-        </fieldset>
         <Link to="/register" className={Style.link}>
           Si no tenes cuenta, hace click acá
         </Link>

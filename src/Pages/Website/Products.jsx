@@ -123,7 +123,10 @@ const Products = () => {
             </p>
           </header>
           <ul>
-            {products.map((producto) => (
+            {
+              console.log("Productos cargados:", products)
+            }
+            {products.filter(product => product.estado === 'ACTIVO').map((producto) => (
               <li
                 key={producto.id}
                 onClick={(e) => {

@@ -29,6 +29,7 @@ export const fetchProducts = createAsyncThunk(
         descripcion: producto.descripcion,
         cantidad: producto.cantidad,
         descuento: producto.descuento,
+        estado: producto.estado
       }));
 
       return mapped;
@@ -46,7 +47,6 @@ const productSlice = createSlice({
     error: null,
   },
   reducers: {
-    // agregar reducers síncronos (ej: clearProducts)
   },
   extraReducers: (builder) => {
     builder

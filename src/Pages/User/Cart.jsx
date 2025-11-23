@@ -40,7 +40,6 @@ const Cart = () => {
         }));
 
         if (updateCartItemAsync.fulfilled.match(resultAction)) {
-            Swal.fire({ title: 'Carrito actualizado', text: resultAction.payload, icon: 'success', confirmButtonText: 'OK' });
         } else {
             Swal.fire({ title: 'Error', text: 'No se pudo actualizar la cantidad', icon: 'error', confirmButtonText: 'OK' });
         }
@@ -72,7 +71,6 @@ const Cart = () => {
         }));
 
         if (updateCartItemAsync.fulfilled.match(resultAction)) {
-            Swal.fire({ title: 'Producto eliminado', text: resultAction.payload, icon: 'success', confirmButtonText: 'OK' });
         } else {
             Swal.fire({ title: 'Error', text: 'No se pudo eliminar el producto', icon: 'error', confirmButtonText: 'OK' });
         }
