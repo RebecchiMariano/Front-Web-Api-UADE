@@ -25,9 +25,6 @@ const AdminOrders = () => {
       try {
         const decoded = jwtDecode(user.accessToken);
         const roles = decoded?.roles || [];
-        
-        console.log("Roles del usuario desde JWT:", roles); // Para debug
-        
         // Verificar si tiene ROLE_ADMINISTRADOR
         if (!roles.includes("ROLE_ADMINISTRADOR")) {
           Swal.fire({
@@ -40,10 +37,10 @@ const AdminOrders = () => {
           });
           return;
         }
-        
+
         // Si tiene acceso, marcamos como true
         setUserHasAccess(true);
-        
+
       } catch (err) {
         console.error("Error al decodificar el token:", err);
         Swal.fire({
@@ -104,24 +101,23 @@ const AdminOrders = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/compras/todas", {
-          headers: user?.accessToken ? { 
+        const res = await fetch("http://localhost:8080/compras/todas", {
+          headers: {
             Authorization: `Bearer ${user.accessToken}`,
-            'Content-Type': 'application/json'
-          } : {}
+            "Content-Type": "application/json",
+          },
         });
-        
+
         if (res.status === 403) {
           throw new Error('No tienes permisos para acceder a las órdenes');
         }
-        
+
         if (!res.ok) {
           throw new Error(`Error ${res.status}: ${res.statusText}`);
         }
-        
+
         const data = await res.json();
-        console.log("Orders data:", data);
-        
+
         const mappedOrders = data.map(order => ({
           id: order.id,
           usuario: order.usuario ? {
@@ -141,11 +137,11 @@ const AdminOrders = () => {
             valor: item.valor || 0
           })) : []
         }));
-        
+
         setOrders(mappedOrders);
       } catch (err) {
         console.error("Error fetching orders:", err);
-        
+
         if (err.message.includes('403')) {
           setError("No tienes permisos para ver las órdenes de compra. Contacta al administrador.");
         } else {
@@ -174,7 +170,7 @@ const AdminOrders = () => {
       });
 
       if (result.isConfirmed) {
-        setOrders(prev => prev.map(order => 
+        setOrders(prev => prev.map(order =>
           order.id === orderId ? { ...order, estado: newStatus } : order
         ));
 
@@ -274,7 +270,7 @@ const AdminOrders = () => {
                       <option value="CONFIRMADA">Confirmada</option>
                       <option value="CANCELADA">Cancelada</option>
                     </select>
-                    
+
                     <button
                       className={Style.detailsBtn}
                       onClick={() => {

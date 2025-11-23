@@ -91,7 +91,7 @@ const router = createBrowserRouter([
             element: <AdminProductsCreate />,
           },
           {
-            path: "products/:id",
+            path: "products/edit/:id",
             element: <AdminProductsUpdate />,
           },
           {

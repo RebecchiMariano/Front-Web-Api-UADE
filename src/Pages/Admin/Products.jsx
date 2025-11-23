@@ -5,13 +5,15 @@ import { Icon } from "@iconify/react";
 import { Link } from "react-router";
 import Hero from "../../Components/shared/Hero";
 import Swal from 'sweetalert2';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProducts } from "../../Redux/Slices/product";
 
 const AdminProducts = () => {
-  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const products = useSelector((state) => state.product.products);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
   const money = new Intl.NumberFormat("es-AR", {
@@ -20,41 +22,15 @@ const AdminProducts = () => {
   });
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/productos/todos", {
-          headers: user?.accessToken ? { 
-            Authorization: `Bearer ${user.accessToken}` 
-          } : {}
-        });
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        const data = await res.json();
-        const mapped = data.map((p) => ({
-          id: p.id,
-          name: p.nombre,
-          category: p.categoria?.nombre || "Sin categoría",
-          img: p.foto || "/img/default.jpg",
-          price: p.valor,
-          cantidad: p.cantidad,
-          estado: p.estado // Agregar el estado del producto
-        }));
-        setProducts(mapped);
-      } catch (err) {
-        console.error(err);
-        setError("No se pudieron cargar los productos.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [user]);
+    if (user?.accessToken) {
+      dispatch(fetchProducts({ accessToken: user.accessToken }));
+    }
+  }, [user, dispatch]);
 
   const handleToggleStatus = async (id, currentEstado, productName) => {
     const newEstado = currentEstado === "ACTIVO" ? "INACTIVO" : "ACTIVO";
     const action = newEstado === "ACTIVO" ? "activar" : "desactivar";
-    
+
     const result = await Swal.fire({
       title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} producto?`,
       html: `¿Estás seguro que quieres ${action} <strong>"${productName}"</strong>?`,
@@ -71,25 +47,23 @@ const AdminProducts = () => {
       try {
         const res = await fetch(`/api/productos/${action}/${id}`, {
           method: "POST",
-          headers: user?.accessToken ? { 
-            Authorization: `Bearer ${user.accessToken}` 
+          headers: user?.accessToken ? {
+            Authorization: `Bearer ${user.accessToken}`
           } : {}
         });
 
         if (!res.ok) throw new Error(`Status ${res.status}`);
+        // Refrescar la lista de productos
         
-        // Actualizar estado en la UI
-        setProducts(prev => prev.map(p => 
-          p.id === id ? { ...p, estado: newEstado } : p
-        ));
-        
+        dispatch(fetchProducts({ accessToken: user.accessToken }));
+
         Swal.fire({
           title: `¡${action.charAt(0).toUpperCase() + action.slice(1)}do!`,
           text: `El producto ha sido ${action}do correctamente.`,
           icon: 'success',
           confirmButtonColor: '#3085d6',
         });
-        
+
       } catch (err) {
         console.error(err);
         Swal.fire({
@@ -123,17 +97,16 @@ const AdminProducts = () => {
 
           <ul>
             {products.map((producto) => (
-              <li 
-                key={producto.id} 
+              <li
+                key={producto.id}
                 className={`${producto.estado === "INACTIVO" ? Style.inactiveProduct : ""}`}
               >
                 {/* Indicador de estado */}
-                <div className={`${Style.statusIndicator} ${
-                  producto.estado === "ACTIVO" ? Style.active : Style.inactive
-                }`}>
+                <div className={`${Style.statusIndicator} ${producto.estado === "ACTIVO" ? Style.active : Style.inactive
+                  }`}>
                   {producto.estado === "ACTIVO" ? "ACTIVO" : "INACTIVO"}
                 </div>
-                
+
                 <figure>
                   <img
                     src={producto.img}
@@ -158,7 +131,7 @@ const AdminProducts = () => {
                     title="Editar"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate(`/admin/products/${producto.id}`);
+                      navigate(`/admin/products/edit/${producto.id}`);
                     }}
                   >
                     <Icon icon="mdi:pencil" />

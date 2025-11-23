@@ -27,9 +27,6 @@ const AdminOrders = () => {
         const roles = decoded?.roles || decoded?.authorities || [];
         const role = Array.isArray(roles) ? roles[0] : roles;
         
-        console.log("Roles del usuario:", roles); // Para debug
-        console.log("Rol principal:", role); // Para debug
-        
         if (role !== "ROLE_ADMINISTRADOR") {
           Swal.fire({
             title: 'Acceso denegado',

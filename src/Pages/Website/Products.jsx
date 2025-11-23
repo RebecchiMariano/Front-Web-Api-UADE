@@ -25,7 +25,6 @@ const Products = () => {
     currency: "ARS",
   });
   useEffect(() => {
-    console.log("items", items);
   }, [items]);
   useEffect(() => {
     const fetchProfile = async () => {
@@ -123,9 +122,6 @@ const Products = () => {
             </p>
           </header>
           <ul>
-            {
-              console.log("Productos cargados:", products)
-            }
             {products.filter(product => product.estado === 'ACTIVO').map((producto) => (
               <li
                 key={producto.id}
