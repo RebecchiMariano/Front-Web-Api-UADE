@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 
 const Admin = () => {
@@ -11,24 +10,30 @@ const Admin = () => {
 
   useEffect(() => {
     const checkAuth = () => {
-      setIsChecking(true);
-      
-      if (!user?.accessToken) {
-        navigate("/login");
-        return;
-      }
+      if (!user?.accessToken) return navigate("/login");
 
       try {
         const decoded = jwtDecode(user.accessToken);
-        const roles = decoded?.roles || decoded?.authorities || [];
-        
-        if (!roles.includes("ROLE_ADMINISTRADOR")) {
+
+        const roles =
+          decoded.roles ||
+          decoded.authorities?.map(a => a.authority) ||
+          [];
+
+        // Permitir ADMIN en cualquiera de estas variantes
+        const hasAdminRole =
+          roles.includes("ROLE_ADMINISTRADOR") ||
+          roles.includes("ADMINISTRADOR") ||
+          roles.includes("ADMIN") ||
+          roles.includes("ROLE_ADMIN");
+
+        if (!hasAdminRole) {
           navigate("/");
           return;
         }
-        
-        // Si es admin, permitir acceso
+
         setIsChecking(false);
+
       } catch (error) {
         console.error("Error decoding token:", error);
         navigate("/login");
@@ -38,10 +43,7 @@ const Admin = () => {
     checkAuth();
   }, [user, navigate]);
 
-  // Mientras verifica, muestra loading
-  if (isChecking) {
-    return <div>Cargando...</div>;
-  }
+  if (isChecking) return <div>Cargando...</div>;
 
   return <Outlet />;
 };

@@ -36,25 +36,7 @@ const ProductsUpdate = () => {
         foto: "",
     });
 
-    useEffect(() => {
-        if (!user?.accessToken) {
-            navigate("/login");
-            return;
-        }
 
-        try {
-            const decoded = jwtDecode(user.accessToken);
-
-            if (decoded.exp * 1000 < Date.now()) {
-                // Token expirado
-                navigate("/login");
-                return;
-            }
-        } catch (err) {
-            navigate("/login");
-            return;
-        }
-    }, [user, navigate]);
 
 
     // 2. Efecto para cargar el Producto y las Categorías
@@ -90,37 +72,30 @@ const ProductsUpdate = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!selectedProduct) return;
+    e.preventDefault();
 
-        const payload = {
-            id: selectedProduct.id,
-            nombre: form.nombre.trim(),
-            descripcion: form.descripcion.trim(),
-            valor: form.valor,
-            cantidad: form.cantidad,
-            descuento: form.descuento,
-            estado: form.estado,
-            foto: form.foto.trim(),
-            // El backend espera un objeto Categoria, no solo el ID
-            categoria: form.categoriaId ? { id: form.categoriaId } : null,
-        };
-
-        const resultAction = await dispatch(updateProduct({
-            id: selectedProduct.id,
-            payload,
-            accessToken: user.accessToken
-        }));
-
-        if (updateProduct.fulfilled.match(resultAction)) {
-            toast.success("Producto actualizado correctamente");
-            navigate("/admin/products");
-        } else {
-            const errorMsg = resultAction.payload || "Error desconocido al actualizar";
-            console.error('Error al actualizar:', errorMsg);
-            toast.error(errorMsg);
-        }
+    const payload = {
+        nombre: form.nombre,
+        descripcion: form.descripcion,
+        valor: form.valor,
+        cantidad: form.cantidad,
+        descuento: form.descuento,
     };
+
+    const resultAction = await dispatch(updateProduct({
+        id,
+        payload,
+        accessToken: user.accessToken,
+    }));
+
+    if (updateProduct.fulfilled.match(resultAction)) {
+        toast.success("Producto actualizado correctamente");
+        navigate("/admin/products");
+    } else {
+        toast.error(resultAction.payload || "Error al actualizar");
+    }
+};
+
 
     const isLoading = status === 'loading';
     const isSaving = updateStatus === 'loading';
@@ -149,43 +124,91 @@ const ProductsUpdate = () => {
                 </article>
                 <article className={Style.dataProduct}>
                     <h3 className={Style.titleProduct}>Editar producto</h3>
-                    <form onSubmit={handleSubmit}>
-                        {/* ... Todos tus labels e inputs usan 'form' y 'handleChange' ... */}
-                        {/* Ejemplo del select de Categoría: */}
+                    <form onSubmit={handleSubmit} className={Style.updateForm}>
+
+                        {/* NOMBRE */}
                         <label>
-                            Categoría
-                            <select
-                                name="categoriaId"
-                                value={form.categoriaId}
+                            Nombre
+                            <input
+                                type="text"
+                                name="nombre"
+                                value={form.nombre}
                                 onChange={handleChange}
-                                disabled={isSaving} // Deshabilitar durante el guardado
-                            >
-                                <option value="">-- Sin categoría --</option>
-                                {categories.map(c => ( // <-- Usar el estado de Redux
-                                    <option key={c.id} value={c.id}>
-                                        {c.nombre}
-                                    </option>
-                                ))}
-                            </select>
+                                required
+                            />
                         </label>
-                        {/* ... Resto de los campos (Nombre, Descripción, Valor, Stock, Descuento, Estado, Foto) ... */}
-                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+
+                        {/* DESCRIPCIÓN */}
+                        <label>
+                            Descripción
+                            <textarea
+                                name="descripcion"
+                                rows="4"
+                                value={form.descripcion}
+                                onChange={handleChange}
+                                required
+                            />
+                        </label>
+
+                        {/* PRECIO */}
+                        <label>
+                            Precio (ARS)
+                            <input
+                                type="number"
+                                name="valor"
+                                step="0.01"
+                                value={form.valor}
+                                onChange={handleChange}
+                                required
+                            />
+                        </label>
+
+                        {/* STOCK */}
+                        <label>
+                            Cantidad / Stock
+                            <input
+                                type="number"
+                                name="cantidad"
+                                value={form.cantidad}
+                                onChange={handleChange}
+                                required
+                            />
+                        </label>
+
+                        {/* DESCUENTO */}
+                        <label>
+                            Descuento (%)
+                            <input
+                                type="number"
+                                name="descuento"
+                                min="0"
+                                max="100"
+                                value={form.descuento}
+                                onChange={handleChange}
+                                required
+                            />
+                        </label>
+
+                        {/* BOTONES */}
+                        <div className={Style.buttons}>
                             <button
                                 type="submit"
-                                disabled={isSaving}
                                 className={Style.buttonAddCart}
+                                disabled={isSaving}
                             >
-                                {isSaving ? 'Guardando...' : 'Guardar'}
+                                {isSaving ? "Guardando..." : "Guardar cambios"}
                             </button>
+
                             <button
                                 type="button"
-                                onClick={() => navigate('/admin/products')}
+                                onClick={() => navigate("/admin/products")}
                                 disabled={isSaving}
                             >
                                 Cancelar
                             </button>
                         </div>
                     </form>
+
                 </article>
             </section>
         </main>
