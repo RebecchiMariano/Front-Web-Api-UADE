@@ -30,11 +30,10 @@ export const fetchProducts = createAsyncThunk(
       }
 
       const data = await response.json();
-
       return data.map((producto) => ({
         id: producto.id,
         name: producto.nombre,
-        category: producto.categoria?.nombre || "Sin categoría",
+        category: producto?.categoriaNombre || "Sin categoría",
         categoryId: producto.categoria?.id,
         img: producto.foto || "/img/default.jpg",
         price: producto.valor,

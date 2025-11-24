@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
+import Hero from "../../Components/shared/Hero";
 import Style from "../../Styles/pages/Product.module.css";
 import toast from "react-hot-toast";
 import {
@@ -20,8 +21,8 @@ const ProductsUpdate = () => {
     // Leer del estado de Redux
     const selectedProduct = useSelector((state) => state.product.selectedProduct);
     const categories = useSelector((state) => state.product.categories);
-    const status = useSelector((state) => state.product.detailStatus); // Carga del producto
-    const updateStatus = useSelector((state) => state.product.updateStatus); // Estado del guardado
+    const status = useSelector((state) => state.product.detailStatus);
+    const updateStatus = useSelector((state) => state.product.updateStatus);
     const error = useSelector((state) => state.product.detailError);
 
     // Estado local para el formulario, inicializado después de cargar el producto
@@ -35,9 +36,6 @@ const ProductsUpdate = () => {
         categoriaId: "",
         foto: "",
     });
-
-
-
 
     // 2. Efecto para cargar el Producto y las Categorías
     useEffect(() => {
@@ -72,29 +70,31 @@ const ProductsUpdate = () => {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
+        
+        const payload = {
+            nombre: form.nombre,
+            descripcion: form.descripcion,
+            valor: form.valor,
+            cantidad: form.cantidad,
+            descuento: form.descuento,
+            categoria: { id: form.categoriaId }
+        };
 
-    const payload = {
-        nombre: form.nombre,
-        descripcion: form.descripcion,
-        valor: form.valor,
-        cantidad: form.cantidad,
-        descuento: form.descuento,
+
+        const resultAction = await dispatch(updateProduct({
+            id,
+            payload,
+            accessToken: user.accessToken,
+        }));
+
+        if (updateProduct.fulfilled.match(resultAction)) {
+            toast.success("Producto actualizado correctamente");
+            navigate("/admin/products");
+        } else {
+            toast.error(resultAction.payload || "Error al actualizar");
+        }
     };
-
-    const resultAction = await dispatch(updateProduct({
-        id,
-        payload,
-        accessToken: user.accessToken,
-    }));
-
-    if (updateProduct.fulfilled.match(resultAction)) {
-        toast.success("Producto actualizado correctamente");
-        navigate("/admin/products");
-    } else {
-        toast.error(resultAction.payload || "Error al actualizar");
-    }
-};
 
 
     const isLoading = status === 'loading';
@@ -104,14 +104,11 @@ const ProductsUpdate = () => {
     if (isLoading) return <div className={Style.mainProduct}>Cargando producto...</div>;
     if (status === 'failed') return <div className={Style.mainProduct}>Error: {error}</div>;
     if (!selectedProduct) return <div className={Style.mainProduct}>Producto no encontrado</div>;
-
-    // ... (El resto del return del formulario usa 'form' y 'categories') ...
     return (
         <main className={Style.mainProduct}>
-            {/* ... Resto de la estructura del formulario (usando form, categories, isSaving) ... */}
+            <Hero title={"Editar producto"} />
             <section className={Style.sectionProduct}>
                 <article className={Style.detailProduct}>
-                    {/* ... Imagen ... */}
                     <figure className={Style.imageProduct}>
                         <img
                             src={form.foto || "/img/default.jpg"}
@@ -126,7 +123,6 @@ const ProductsUpdate = () => {
                     <h3 className={Style.titleProduct}>Editar producto</h3>
                     <form onSubmit={handleSubmit} className={Style.updateForm}>
 
-                        {/* NOMBRE */}
                         <label>
                             Nombre
                             <input
@@ -138,7 +134,6 @@ const ProductsUpdate = () => {
                             />
                         </label>
 
-                        {/* DESCRIPCIÓN */}
                         <label>
                             Descripción
                             <textarea
@@ -149,8 +144,20 @@ const ProductsUpdate = () => {
                                 required
                             />
                         </label>
-
-                        {/* PRECIO */}
+                        <label>Categoría existente</label>
+                        <select
+                            name="categoriaId"
+                            value={form.categoriaId}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">-- Seleccionar --</option>
+                            {categories.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                    {c.nombre}
+                                </option>
+                            ))}
+                        </select>
                         <label>
                             Precio (ARS)
                             <input

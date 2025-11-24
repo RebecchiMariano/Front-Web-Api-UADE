@@ -17,8 +17,6 @@ export const fetchCategories = createAsyncThunk(
       console.log('[category] fetchCategories - iniciando petición a', `${API_BASE}/categorias/`, { tokenPresent: !!token });
 
       const res = await fetch(`${API_BASE}/categorias/`, { signal: controller.signal, headers });
-
-      // Leer body para obtener mensaje de error si hay
       if (!res.ok) {
         const text = await res.text().catch(() => null);
         let msg = text;

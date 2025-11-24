@@ -45,17 +45,14 @@ const ProductsCreate = () => {
     },
   });
 
-  // 🔵 Cargar categorías
   useEffect(() => {
     if (user?.accessToken) {
       dispatch(fetchCategories(user.accessToken));
     }
   }, [user, dispatch]);
 
-  // 🟢 Nueva función usando createProduct de Redux
   const onSubmit = async (data) => {
     try {
-      // Normalizar categoría
       const categoria =
         data.categoriaId && data.categoriaId !== ""
           ? { id: data.categoriaId }
@@ -79,7 +76,6 @@ const ProductsCreate = () => {
         datos: [],
       };
 
-      // 🔥 ACÁ está la magia: usamos Redux
       const result = await dispatch(
         createProduct({
           payload,

@@ -120,7 +120,7 @@ const AdminProducts = () => {
                 </figure>
                 <article>
                   <h3>{producto.name}</h3>
-                  <p>{producto.category}</p>
+                  <p>{producto.categoriaNombre}</p>
                   <p className={Style.stockInfo}>Stock: {producto.cantidad}</p>
                 </article>
 

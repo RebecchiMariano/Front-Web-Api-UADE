@@ -184,7 +184,7 @@ const Product = () => {
                     <p className={Style.description}>{producto.descripcion}</p>
                     <ul className={Style.info}>
                         <h2>Caracteristicas</h2>
-                        <li>Categoría: {producto.categoria?.nombre}</li>
+                        <li>Categoría: {producto.categoriaNombre}</li>
                         <li>Stock: {producto.cantidad}</li>
                         <li>Descuento: {producto.descuento}%</li>
                         <li>Estado: {producto.estado}</li>
