@@ -58,6 +58,40 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const createProduct = createAsyncThunk(
+  'product/createProduct',
+  async ({ payload, accessToken }, { rejectWithValue }) => {
+    try {
+
+      const res = await fetch("http://localhost:8080/productos/crear", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const text = await res.text();
+      let body;
+
+      try {
+        body = JSON.parse(text);
+      } catch {
+        body = { message: text };
+      }
+
+      if (!res.ok) throw new Error(body.message || `Error ${res.status}`);
+
+      return body;
+      
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
 // 1. Obtener un producto por ID (para edición administrativa)
 
 export const fetchProductById = createAsyncThunk(

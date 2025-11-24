@@ -99,7 +99,7 @@ const Register = () => {
           errorMsg = resultData.errors.map(err => err.defaultMessage).join(', ');
         }
         throw new Error(errorMsg);
-      }
+      }devTools: true
       const loginRes = await fetch("/api/v1/auth/authenticate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

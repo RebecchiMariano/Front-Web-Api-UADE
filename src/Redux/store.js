@@ -3,9 +3,6 @@ import userReducer from "./Slices/user";
 import cartReducer from "./Slices/cart";
 import productReducer from "./Slices/product";
 
-const enhancers = compose(
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  );
 
 
 const store = configureStore({
@@ -13,7 +10,6 @@ const store = configureStore({
     user: userReducer,
     cart: cartReducer,
     product: productReducer,
-    enhancers,
   },
 });
 

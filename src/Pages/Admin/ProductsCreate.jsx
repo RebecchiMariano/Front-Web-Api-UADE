@@ -1,311 +1,219 @@
-import React, { useEffect, useState } from "react";
-import Style from "../../Styles/pages/AdminOrders.module.css";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import Style from "../../Styles/pages/AdminProductsCreate.module.css";
+import { useSelector, useDispatch } from "react-redux";
 import Hero from "../../Components/shared/Hero";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
-import { jwtDecode } from "jwt-decode";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { fetchCategories } from "../../Redux/Slices/product";
 
-const AdminOrders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [userHasAccess, setUserHasAccess] = useState(false);
-  const user = useSelector((state) => state.user.value);
+const productSchema = z.object({
+  nombre: z.string().min(2, "Nombre demasiado corto"),
+  descripcion: z.string().min(5, "Ingrese una descripción"),
+  categoriaId: z.string().optional(),
+  categoriaNombre: z.string().optional(),
+  cantidad: z.coerce.number().min(0),
+  valor: z.coerce.number().min(0),
+  descuento: z.coerce.number().min(0).max(100),
+  estado: z.enum(["ACTIVO", "INACTIVO"]),
+});
+
+const ProductsCreate = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.value);
+  const categories = useSelector((state) => state.product.categories || []);
 
-  const money = new Intl.NumberFormat("es-AR", {
-    style: "currency",
-    currency: "ARS",
+  const { register, handleSubmit, formState, setError, reset } = useForm({
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      nombre: "",
+      descripcion: "",
+      categoriaId: "",
+      categoriaNombre: "",
+      cantidad: 0,
+      valor: 0,
+      descuento: 0,
+      foto: "",
+      estado: "ACTIVO",
+    },
   });
 
-  // Verificación de permisos - Misma lógica que AdminProductsCreate
   useEffect(() => {
     if (user?.accessToken) {
-      try {
-        const decoded = jwtDecode(user.accessToken);
-        const roles = decoded?.roles || decoded?.authorities || [];
-        const role = Array.isArray(roles) ? roles[0] : roles;
-        
-        if (role !== "ROLE_ADMINISTRADOR") {
-          Swal.fire({
-            title: 'Acceso denegado',
-            text: 'No tienes permisos para acceder a esta página.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          }).then(() => {
-            navigate("/admin");
-          });
-          return;
-        }
-        
-        // Si tiene acceso, marcamos como true
-        setUserHasAccess(true);
-        
-      } catch (err) {
-        console.error("Error al decodificar el token:", err);
-        Swal.fire({
-          title: 'Error de autenticación',
-          text: 'Por favor, inicia sesión nuevamente.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        }).then(() => {
-          navigate("/login");
-        });
-      }
-    } else {
-      navigate("/login");
+      dispatch(fetchCategories(user.accessToken));
     }
-  }, [user, navigate]);
+  }, [user, dispatch]);
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('es-AR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 'CONFIRMADA':
-        return Style.statusConfirmed;
-      case 'PENDIENTE':
-        return Style.statusPending;
-      case 'CANCELADA':
-        return Style.statusCancelled;
-      default:
-        return Style.statusPending;
-    }
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'CONFIRMADA':
-        return 'Confirmada';
-      case 'PENDIENTE':
-        return 'Pendiente';
-      case 'CANCELADA':
-        return 'Cancelada';
-      default:
-        return status;
-    }
-  };
-
-  // Fetch orders - solo si el usuario tiene acceso
-  useEffect(() => {
-    const fetchOrders = async () => {
-      if (!userHasAccess) return;
-
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/compras", {
-          headers: user?.accessToken ? { 
-            Authorization: `Bearer ${user.accessToken}`,
-            'Content-Type': 'application/json'
-          } : {}
-        });
-        
-        if (res.status === 403) {
-          throw new Error('No tienes permisos para acceder a las órdenes');
-        }
-        
-        if (!res.ok) {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
-        }
-        
-        const data = await res.json();
-        console.log("Orders data:", data);
-        
-        const mappedOrders = data.map(order => ({
-          id: order.id,
-          usuario: order.usuario ? {
-            nombre: order.usuario.nombre || 'Cliente',
-            email: order.usuario.email || 'Sin email'
-          } : { nombre: 'Cliente', email: 'Sin email' },
-          valor: order.valor || 0,
-          fechaHora: order.fechaHora || new Date().toISOString(),
-          estado: order.estado || 'PENDIENTE',
-          items: order.items ? order.items.map(item => ({
-            id: item.id,
-            producto: item.producto ? {
-              nombre: item.producto.nombre || 'Producto sin nombre',
-              valor: item.producto.valor || 0
-            } : { nombre: 'Producto no disponible', valor: 0 },
-            cantidad: item.cantidad || 0,
-            valor: item.valor || 0
-          })) : []
-        }));
-        
-        setOrders(mappedOrders);
-      } catch (err) {
-        console.error("Error fetching orders:", err);
-        
-        if (err.message.includes('403')) {
-          setError("No tienes permisos para ver las órdenes de compra. Contacta al administrador.");
-        } else {
-          setError("No se pudieron cargar las órdenes de compra.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (userHasAccess && user?.accessToken) {
-      fetchOrders();
-    }
-  }, [user, userHasAccess]);
-
-  const handleUpdateStatus = async (orderId, newStatus) => {
+  const onSubmit = async (data) => {
     try {
-      const result = await Swal.fire({
-        title: `¿Cambiar estado a ${getStatusText(newStatus).toLowerCase()}?`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, cambiar',
-        cancelButtonText: 'Cancelar'
+      // Normalizar categoría
+      const categoria =
+        data.categoriaId && data.categoriaId !== ""
+          ? { id: data.categoriaId }
+          : data.categoriaNombre
+          ? { nombre: data.categoriaNombre }
+          : null;
+
+      if (!categoria) {
+        throw new Error("Debe seleccionar o ingresar una categoría.");
+      }
+
+      const payload = {
+        nombre: data.nombre,
+        descripcion: data.descripcion,
+        cantidad: data.cantidad,
+        valor: data.valor,
+        descuento: data.descuento,
+        foto: data.foto,
+        estado: data.estado,
+        categoria,
+        datos: [],
+      };
+
+      const res = await fetch(`/api/productos/crear`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(user?.accessToken
+            ? { Authorization: `Bearer ${user.accessToken}` }
+            : {}),
+        },
+        body: JSON.stringify(payload),
       });
 
-      if (result.isConfirmed) {
-        setOrders(prev => prev.map(order => 
-          order.id === orderId ? { ...order, estado: newStatus } : order
-        ));
+      const text = await res.text();
+      let body;
 
-        Swal.fire({
-          title: '¡Actualizado!',
-          text: `El estado de la orden ha sido cambiado a ${getStatusText(newStatus).toLowerCase()}.`,
-          icon: 'success',
-          confirmButtonColor: '#3085d6',
-        });
+      try {
+        body = JSON.parse(text);
+      } catch {
+        body = { message: text };
       }
-    } catch (err) {
-      console.error("Error updating order status:", err);
+
+      if (!res.ok) throw new Error(body.message || "Error al crear el producto");
+
       Swal.fire({
-        title: 'Error',
-        text: 'No se pudo actualizar el estado de la orden.',
-        icon: 'error',
-        confirmButtonColor: '#d33',
+        title: "Producto creado",
+        text: `El producto "${data.nombre}" fue creado correctamente.`,
+        icon: "success",
+      });
+
+      reset();
+      navigate("/admin/products");
+    } catch (err) {
+      console.error(err);
+      setError("root", { message: err.message });
+      Swal.fire({
+        title: "Error",
+        text: err.message || "Error inesperado",
+        icon: "error",
       });
     }
   };
-
-  // Mostrar loading mientras verificamos permisos
-  if (!userHasAccess && user?.accessToken) {
-    return <div className={Style.ordersMain}>Verificando permisos...</div>;
-  }
-
-  if (loading) return <div className={Style.ordersMain}>Cargando órdenes...</div>;
-  if (error) return <div className={Style.ordersMain}>{error}</div>;
 
   return (
-    <main className={Style.ordersMain}>
-      <Hero />
+    <main className={Style.main}>
+      <Hero title="Crear Producto" />
       <section className={Style.content}>
-        <article className={Style.orders}>
-          <header>
-            <h2>Administración de Órdenes de Compra</h2>
-            <p>Gestión de todas las órdenes del sistema</p>
-          </header>
+        <h2 className={Style.title}>Crear nuevo producto</h2>
 
-          {orders.length === 0 ? (
-            <div className={Style.noOrders}>
-              <p>No hay órdenes de compra registradas.</p>
+        <form className={Style.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className={Style.row}>
+            <label>Nombre</label>
+            <input type="text" {...register("nombre")} />
+            {formState.errors?.nombre && (
+              <div className={Style.error}>{formState.errors.nombre.message}</div>
+            )}
+          </div>
+
+          <div className={Style.row}>
+            <label>Descripción</label>
+            <textarea rows={4} {...register("descripcion")} />
+            {formState.errors?.descripcion && (
+              <div className={Style.error}>
+                {formState.errors.descripcion.message}
+              </div>
+            )}
+          </div>
+
+          <div className={Style.rowInline}>
+            <div>
+              <label>Categoría existente</label>
+              <select {...register("categoriaId")}>
+                <option value="">-- Seleccionar --</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nombre}
+                  </option>
+                ))}
+              </select>
             </div>
-          ) : (
-            <div className={Style.ordersList}>
-              {orders.map((order) => (
-                <div key={order.id} className={Style.orderCard}>
-                  <div className={Style.orderHeader}>
-                    <div className={Style.orderInfo}>
-                      <h3>Orden #{order.id.slice(-8).toUpperCase()}</h3>
-                      <p className={Style.customerInfo}>
-                        Cliente: {order.usuario.nombre} ({order.usuario.email})
-                      </p>
-                      <p className={Style.orderDate}>
-                        Fecha: {formatDate(order.fechaHora)}
-                      </p>
-                    </div>
-                    <div className={Style.orderMeta}>
-                      <div className={`${Style.orderStatus} ${getStatusClass(order.estado)}`}>
-                        {getStatusText(order.estado)}
-                      </div>
-                      <div className={Style.orderTotal}>
-                        Total: {money.format(order.valor)}
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className={Style.orderItems}>
-                    <h4>Productos:</h4>
-                    <ul>
-                      {order.items.map((item) => (
-                        <li key={item.id} className={Style.orderItem}>
-                          <span className={Style.itemName}>
-                            {item.producto.nombre}
-                          </span>
-                          <span className={Style.itemQuantity}>
-                            x{item.cantidad}
-                          </span>
-                          <span className={Style.itemPrice}>
-                            {money.format(item.producto.valor)} c/u
-                          </span>
-                          <span className={Style.itemSubtotal}>
-                            Subtotal: {money.format(item.valor)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className={Style.orderActions}>
-                    <select
-                      value={order.estado}
-                      onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
-                      className={Style.statusSelect}
-                    >
-                      <option value="PENDIENTE">Pendiente</option>
-                      <option value="CONFIRMADA">Confirmada</option>
-                      <option value="CANCELADA">Cancelada</option>
-                    </select>
-                    
-                    <button
-                      className={Style.detailsBtn}
-                      onClick={() => {
-                        Swal.fire({
-                          title: `Orden #${order.id.slice(-8).toUpperCase()}`,
-                          html: `
-                            <div style="text-align: left;">
-                              <p><strong>Cliente:</strong> ${order.usuario.nombre} (${order.usuario.email})</p>
-                              <p><strong>Fecha:</strong> ${formatDate(order.fechaHora)}</p>
-                              <p><strong>Estado:</strong> ${getStatusText(order.estado)}</p>
-                              <p><strong>Total:</strong> ${money.format(order.valor)}</p>
-                              <hr>
-                              <h4>Productos:</h4>
-                              ${order.items.map(item => `
-                                <p>• ${item.producto.nombre} - ${item.cantidad} x ${money.format(item.producto.valor)} = ${money.format(item.valor)}</p>
-                              `).join('')}
-                            </div>
-                          `,
-                          confirmButtonText: 'Cerrar'
-                        });
-                      }}
-                    >
-                      Ver Detalles
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div>
+              <label>Nueva categoría</label>
+              <input
+                type="text"
+                {...register("categoriaNombre")}
+                placeholder="Nombre de la categoría"
+              />
             </div>
+          </div>
+
+          <div className={Style.rowInline}>
+            <div>
+              <label>Cantidad</label>
+              <input type="number" {...register("cantidad")} />
+            </div>
+
+            <div>
+              <label>Precio (ARS)</label>
+              <input type="number" step="0.01" {...register("valor")} />
+            </div>
+          </div>
+
+          <div className={Style.rowInline}>
+            <div>
+              <label>Descuento %</label>
+              <input type="number" {...register("descuento")} />
+            </div>
+
+            <div>
+              <label>Foto (URL)</label>
+              <input type="text" {...register("foto")} placeholder="https://..." />
+            </div>
+          </div>
+
+          <div className={Style.row}>
+            <label>Estado</label>
+            <select {...register("estado")}>
+              <option value="ACTIVO">ACTIVO</option>
+              <option value="INACTIVO">INACTIVO</option>
+            </select>
+          </div>
+
+          <div className={Style.actions}>
+            <button className={Style.submit} type="submit">
+              Crear Producto
+            </button>
+            <button
+              type="button"
+              className={Style.cancel}
+              onClick={() => navigate("/admin/products")}
+            >
+              Cancelar
+            </button>
+          </div>
+
+          {formState.errors?.root && (
+            <div className={Style.error}>{formState.errors.root.message}</div>
           )}
-        </article>
+        </form>
       </section>
     </main>
   );
 };
 
-export default AdminOrders;
+export default ProductsCreate;
