@@ -4,30 +4,25 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // THUNKS ASÍNCRONOS
 // ====================================================================
 
+// =====================================================
+// 1) LISTAR PRODUCTOS
+// =====================================================
 export const fetchProducts = createAsyncThunk(
   'product/fetchProducts',
   async ({ category, search, accessToken }, { rejectWithValue }) => {
     try {
       let url = 'http://localhost:8080/productos/todos';
 
-      // 1. Determinar la URL basada en los parámetros
       if (category) {
         url = `http://localhost:8080/productos/categoria/nombre/${encodeURIComponent(category)}`;
       } else if (search) {
         url = `http://localhost:8080/productos/buscar?q=${encodeURIComponent(search)}`;
       }
 
-      // 2. Definir los headers, incluyendo el token de autorización
-      const headers = {
-        'Content-Type': 'application/json',
-      };
+      const headers = { 'Content-Type': 'application/json' };
+      if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
 
-      // Solo incluimos el token si lo recibimos (aunque para /todos debe ser obligatorio si está protegido)
-      if (accessToken) {
-        headers['Authorization'] = `Bearer ${accessToken}`;
-      }
-
-      const response = await fetch(url, { headers }); // ⬅️ Pasar los headers
+      const response = await fetch(url, { headers });
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -35,9 +30,6 @@ export const fetchProducts = createAsyncThunk(
       }
 
       const data = await response.json();
-
-      console.log(data);
-      
 
       return data.map((producto) => ({
         id: producto.id,
@@ -58,11 +50,14 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+
+// =====================================================
+// 2) CREAR PRODUCTO
+// =====================================================
 export const createProduct = createAsyncThunk(
   'product/createProduct',
   async ({ payload, accessToken }, { rejectWithValue }) => {
     try {
-
       const res = await fetch("http://localhost:8080/productos/crear", {
         method: "POST",
         headers: {
@@ -92,151 +87,94 @@ export const createProduct = createAsyncThunk(
 );
 
 
-// 1. Obtener un producto por ID (para edición administrativa)
-
+// =====================================================
+// 3) PRODUCTO POR ID
+// =====================================================
 export const fetchProductById = createAsyncThunk(
-
   'product/fetchProductById',
-
   async ({ id, accessToken }, { rejectWithValue }) => {
-
     try {
-
       const res = await fetch(`http://localhost:8080/productos/${id}`, {
-
         headers: {
-
           'Content-Type': 'application/json',
-
           Authorization: `Bearer ${accessToken}`,
-
         },
-
       });
 
-
-
       if (!res.ok) {
-
         const errorBody = await res.text();
-
         throw new Error(errorBody || `Error ${res.status}`);
-
       }
-
-
 
       return await res.json();
 
     } catch (error) {
-
       return rejectWithValue(error.message);
-
     }
-
   }
-
 );
 
 
-
-// 2. Obtener la lista de categorías (reutilizable)
-
+// =====================================================
+// 4) CATEGORÍAS (TEMPORALMENTE SIGUE AQUÍ)
+// =====================================================
 export const fetchCategories = createAsyncThunk(
-
   'product/fetchCategories',
-
   async (accessToken, { rejectWithValue }) => {
-
     try {
-
       const res = await fetch("http://localhost:8080/categorias/", {
-
         headers: {
-
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${accessToken}`,
-
         },
-
-        // credentials: "include" ya no es necesario si solo pasas el token
-
       });
-
-
 
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
       const data = await res.json();
-
-
-      // Mapear y filtrar categorías activas
-
       return data.filter(c => c.estado === "ACTIVO");
 
     } catch (error) {
-
       return rejectWithValue(error.message);
-
     }
-
   }
-
 );
 
 
-
-// 3. Actualizar un producto existente
-
+// =====================================================
+// 5) EDITAR PRODUCTO
+// =====================================================
 export const updateProduct = createAsyncThunk(
-
   'product/updateProduct',
-
   async ({ id, payload, accessToken }, { rejectWithValue }) => {
-
     try {
-
       const res = await fetch(`http://localhost:8080/productos/editar/${id}`, {
-
         method: "PUT",
-
         headers: {
-
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${accessToken}`,
-
         },
-
         body: JSON.stringify(payload),
-
       });
 
-
-
       if (!res.ok) {
-
         const errText = await res.text();
-
         throw new Error(errText || `Error ${res.status}`);
-
       }
 
-
-
-      return await res.json(); // Devuelve el producto actualizado
+      return await res.json();
 
     } catch (error) {
-
       return rejectWithValue(error.message);
-
     }
-
   }
-
 );
 
+
+
+// ====================================================================
+// SLICE PRINCIPAL
+// ====================================================================
 
 const productSlice = createSlice({
   name: 'product',
@@ -245,8 +183,11 @@ const productSlice = createSlice({
     categories: [],
     selectedProduct: null,
     status: 'idle',
+    detailStatus: 'idle',
     updateStatus: 'idle',
     error: null,
+    detailError: null,
+    updateError: null,
   },
   reducers: {
     clearSelectedProduct: (state) => {
@@ -255,22 +196,27 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // --- HANDLERS PARA fetchProducts (Para la lista de admin) ---
+
+      // =====================================================
+      // LISTAR PRODUCTOS
+      // =====================================================
       .addCase(fetchProducts.pending, (state) => {
-        // Usamos este status para la lista principal de productos
         state.status = 'loading';
         state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.products = action.payload; // Cargar la lista de productos
+        state.products = action.payload;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
 
-      // --- Handlers para fetchCategories ---
+
+      // =====================================================
+      // CARGAR CATEGORÍAS
+      // =====================================================
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.categories = action.payload;
       })
@@ -279,48 +225,91 @@ const productSlice = createSlice({
         state.categories = [];
       })
 
-      // --- Handlers para fetchProductById (Para el formulario de edición) ---
+
+      // =====================================================
+      // PRODUCTO POR ID
+      // =====================================================
       .addCase(fetchProductById.pending, (state) => {
-        // Podemos usar un estado separado o reusar 'status' para esta carga específica
-        state.status = 'loading';
+        state.detailStatus = 'loading';
         state.selectedProduct = null;
-        state.error = null;
+        state.detailError = null;
       })
       .addCase(fetchProductById.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.detailStatus = 'succeeded';
         state.selectedProduct = action.payload;
       })
       .addCase(fetchProductById.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+        state.detailStatus = 'failed';
+        state.detailError = action.payload;
       })
 
-      // --- Handlers para updateProduct ---
+
+      // =====================================================
+      // 🟢 NUEVO: CREAR PRODUCTO
+      // =====================================================
+      .addCase(createProduct.pending, (state) => {
+        state.updateStatus = 'loading';
+        state.updateError = null;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.updateStatus = 'succeeded';
+
+        state.products = [
+          ...state.products,
+          {
+            id: action.payload.id,
+            name: action.payload.nombre,
+            category: action.payload.categoria?.nombre || "Sin categoría",
+            categoryId: action.payload.categoria?.id,
+            img: action.payload.foto || "/img/default.jpg",
+            price: action.payload.valor,
+            descripcion: action.payload.descripcion,
+            cantidad: action.payload.cantidad,
+            descuento: action.payload.descuento,
+            estado: action.payload.estado
+          }
+        ];
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.updateStatus = 'failed';
+        state.updateError = action.payload;
+      })
+
+
+      // =====================================================
+      // 🟢 NUEVO: EDITAR PRODUCTO COMPLETO
+      // =====================================================
       .addCase(updateProduct.pending, (state) => {
         state.updateStatus = 'loading';
+        state.updateError = null;
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.updateStatus = 'succeeded';
         state.selectedProduct = action.payload;
 
-        // Actualizar la lista de productos (products) después de la edición exitosa
         state.products = state.products.map(p =>
-          p.id === action.payload.id ? {
-            ...p,
-            name: action.payload.nombre,
-            price: action.payload.valor,
-            cantidad: action.payload.cantidad,
-            estado: action.payload.estado
-          } : p
+          p.id === action.payload.id
+            ? {
+                ...p,
+                name: action.payload.nombre,
+                descripcion: action.payload.descripcion,
+                price: action.payload.valor,
+                cantidad: action.payload.cantidad,
+                descuento: action.payload.descuento,
+                estado: action.payload.estado,
+                category: action.payload.categoria?.nombre || "Sin categoría",
+                categoryId: action.payload.categoria?.id,
+                img: action.payload.foto || "/img/default.jpg"
+              }
+            : p
         );
       })
       .addCase(updateProduct.rejected, (state, action) => {
         state.updateStatus = 'failed';
-        state.error = action.payload;
+        state.updateError = action.payload;
       });
   },
 });
 
 export const { clearSelectedProduct } = productSlice.actions;
-
 export default productSlice.reducer;

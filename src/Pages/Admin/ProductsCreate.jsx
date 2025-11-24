@@ -7,7 +7,9 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { fetchCategories } from "../../Redux/Slices/product";
+
+// 🟢 Importar correctamente del slice de productos
+import { fetchCategories, createProduct } from "../../Redux/Slices/product";
 
 const productSchema = z.object({
   nombre: z.string().min(2, "Nombre demasiado corto"),
@@ -17,6 +19,7 @@ const productSchema = z.object({
   cantidad: z.coerce.number().min(0),
   valor: z.coerce.number().min(0),
   descuento: z.coerce.number().min(0).max(100),
+  foto: z.string().optional(),
   estado: z.enum(["ACTIVO", "INACTIVO"]),
 });
 
@@ -25,6 +28,7 @@ const ProductsCreate = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.value);
   const categories = useSelector((state) => state.product.categories || []);
+  const updateStatus = useSelector((state) => state.product.updateStatus);
 
   const { register, handleSubmit, formState, setError, reset } = useForm({
     resolver: zodResolver(productSchema),
@@ -41,12 +45,14 @@ const ProductsCreate = () => {
     },
   });
 
+  // 🔵 Cargar categorías
   useEffect(() => {
     if (user?.accessToken) {
       dispatch(fetchCategories(user.accessToken));
     }
   }, [user, dispatch]);
 
+  // 🟢 Nueva función usando createProduct de Redux
   const onSubmit = async (data) => {
     try {
       // Normalizar categoría
@@ -73,42 +79,31 @@ const ProductsCreate = () => {
         datos: [],
       };
 
-      const res = await fetch(`/api/productos/crear`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(user?.accessToken
-            ? { Authorization: `Bearer ${user.accessToken}` }
-            : {}),
-        },
-        body: JSON.stringify(payload),
-      });
+      // 🔥 ACÁ está la magia: usamos Redux
+      const result = await dispatch(
+        createProduct({
+          payload,
+          accessToken: user.accessToken,
+        })
+      );
 
-      const text = await res.text();
-      let body;
+      if (createProduct.fulfilled.match(result)) {
+        Swal.fire({
+          title: "Producto creado",
+          text: `El producto "${data.nombre}" fue creado correctamente.`,
+          icon: "success",
+        });
 
-      try {
-        body = JSON.parse(text);
-      } catch {
-        body = { message: text };
+        reset();
+        navigate("/admin/products");
+      } else {
+        throw new Error(result.payload || "Error desconocido al crear producto");
       }
-
-      if (!res.ok) throw new Error(body.message || "Error al crear el producto");
-
-      Swal.fire({
-        title: "Producto creado",
-        text: `El producto "${data.nombre}" fue creado correctamente.`,
-        icon: "success",
-      });
-
-      reset();
-      navigate("/admin/products");
     } catch (err) {
-      console.error(err);
       setError("root", { message: err.message });
       Swal.fire({
         title: "Error",
-        text: err.message || "Error inesperado",
+        text: err.message,
         icon: "error",
       });
     }
@@ -195,8 +190,8 @@ const ProductsCreate = () => {
           </div>
 
           <div className={Style.actions}>
-            <button className={Style.submit} type="submit">
-              Crear Producto
+            <button className={Style.submit} type="submit" disabled={updateStatus === "loading"}>
+              {updateStatus === "loading" ? "Creando..." : "Crear Producto"}
             </button>
             <button
               type="button"

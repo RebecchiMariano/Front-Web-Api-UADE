@@ -20,9 +20,9 @@ const ProductsUpdate = () => {
     // Leer del estado de Redux
     const selectedProduct = useSelector((state) => state.product.selectedProduct);
     const categories = useSelector((state) => state.product.categories);
-    const status = useSelector((state) => state.product.status); // Carga del producto
+    const status = useSelector((state) => state.product.detailStatus); // Carga del producto
     const updateStatus = useSelector((state) => state.product.updateStatus); // Estado del guardado
-    const error = useSelector((state) => state.product.error);
+    const error = useSelector((state) => state.product.detailError);
 
     // Estado local para el formulario, inicializado después de cargar el producto
     const [form, setForm] = useState({
