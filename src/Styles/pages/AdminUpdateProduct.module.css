@@ -1,0 +1,115 @@
+.main{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+}
+.content{
+    width: calc(100% - 4rem);
+    display: flex;
+    flex-flow: row wrap;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--light-blue-100);
+    border-radius: 8px;
+    box-shadow: var(--mid-bs);
+}
+@media screen and (min-width: 768px){
+    .content{
+        width: calc(80% - 4rem);
+        justify-content: space-between;
+
+    }
+}
+.detailProduct{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+@media screen and (min-width: 768px){
+   .detailProduct{
+        width: 30%;
+        flex-flow: row wrap;
+    }
+}
+.imageProduct{
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: var(--mid-bs);
+}
+.imageProduct img{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+.dataProduct{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+@media screen and (min-width: 768px){
+    .dataProduct{
+        width: 65%;
+    }
+}
+.titleProduct{
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--blue-900);
+}
+.fieldset{
+    width: 100%;
+    border: none;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.fieldset > input, .fieldset > select, .fieldset > textarea{
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(14,42,66,0.08);
+    border-radius: 6px;
+    background: #fff;
+    outline: none;
+}
+.updateForm{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+@media screen and (min-width: 768px){
+    .updateForm{
+        width: 90%;
+    }
+}
+
+.buttons{
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+.buttonSubmit{
+    background-image: linear-gradient(90deg, var(--light-blue-900), rgba(34,99,160,0.85));
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(34,99,160,0.12);
+}
+.buttonCancel{
+    background: var(--red-900);
+    color: var(--gray-50);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+}

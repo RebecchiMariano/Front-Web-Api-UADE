@@ -38,6 +38,12 @@
   width: 100%;
   object-fit: contain;
 }
+.userNav{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
 .headerActions {
   flex: 1;
   display: flex;

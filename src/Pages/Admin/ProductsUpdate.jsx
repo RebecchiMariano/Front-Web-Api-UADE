@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
-import { jwtDecode } from "jwt-decode";
 import Hero from "../../Components/shared/Hero";
-import Style from "../../Styles/pages/Product.module.css";
+import Style from "../../Styles/pages/AdminUpdateProduct.module.css";
 import toast from "react-hot-toast";
 import {
     fetchProductById,
@@ -71,7 +70,7 @@ const ProductsUpdate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const payload = {
             nombre: form.nombre,
             descripcion: form.descripcion,
@@ -105,9 +104,9 @@ const ProductsUpdate = () => {
     if (status === 'failed') return <div className={Style.mainProduct}>Error: {error}</div>;
     if (!selectedProduct) return <div className={Style.mainProduct}>Producto no encontrado</div>;
     return (
-        <main className={Style.mainProduct}>
+        <main className={Style.main}>
             <Hero title={"Editar producto"} />
-            <section className={Style.sectionProduct}>
+            <section className={Style.content}>
                 <article className={Style.detailProduct}>
                     <figure className={Style.imageProduct}>
                         <img
@@ -122,9 +121,10 @@ const ProductsUpdate = () => {
                 <article className={Style.dataProduct}>
                     <h3 className={Style.titleProduct}>Editar producto</h3>
                     <form onSubmit={handleSubmit} className={Style.updateForm}>
-
-                        <label>
-                            Nombre
+                        <fieldset className={Style.fieldset}>
+                            <label>
+                                Nombre
+                            </label>
                             <input
                                 type="text"
                                 name="nombre"
@@ -132,10 +132,11 @@ const ProductsUpdate = () => {
                                 onChange={handleChange}
                                 required
                             />
-                        </label>
-
-                        <label>
-                            Descripción
+                        </fieldset>
+                        <fieldset className={Style.fieldset}>
+                            <label>
+                                Descripción
+                            </label>
                             <textarea
                                 name="descripcion"
                                 rows="4"
@@ -143,23 +144,27 @@ const ProductsUpdate = () => {
                                 onChange={handleChange}
                                 required
                             />
-                        </label>
-                        <label>Categoría existente</label>
-                        <select
-                            name="categoriaId"
-                            value={form.categoriaId}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="">-- Seleccionar --</option>
-                            {categories.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                    {c.nombre}
-                                </option>
-                            ))}
-                        </select>
-                        <label>
-                            Precio (ARS)
+                        </fieldset>
+                        <fieldset className={Style.fieldset}>
+                            <label>Categoría existente</label>
+                            <select
+                                name="categoriaId"
+                                value={form.categoriaId}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">-- Seleccionar --</option>
+                                {categories.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                        {c.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </fieldset>
+                        <fieldset className={Style.fieldset}>
+                            <label>
+                                Precio (ARS)
+                            </label>
                             <input
                                 type="number"
                                 name="valor"
@@ -168,11 +173,13 @@ const ProductsUpdate = () => {
                                 onChange={handleChange}
                                 required
                             />
-                        </label>
+                        </fieldset>
 
                         {/* STOCK */}
-                        <label>
-                            Cantidad / Stock
+                        <fieldset className={Style.fieldset}>
+                            <label>
+                                Cantidad / Stock
+                            </label>
                             <input
                                 type="number"
                                 name="cantidad"
@@ -180,11 +187,13 @@ const ProductsUpdate = () => {
                                 onChange={handleChange}
                                 required
                             />
-                        </label>
 
+                        </fieldset>
                         {/* DESCUENTO */}
-                        <label>
-                            Descuento (%)
+                        <fieldset className={Style.fieldset}>
+                            <label>
+                                Descuento (%)
+                            </label>
                             <input
                                 type="number"
                                 name="descuento"
@@ -194,13 +203,13 @@ const ProductsUpdate = () => {
                                 onChange={handleChange}
                                 required
                             />
-                        </label>
 
+                        </fieldset>
                         {/* BOTONES */}
                         <div className={Style.buttons}>
                             <button
                                 type="submit"
-                                className={Style.buttonAddCart}
+                                className={Style.buttonSubmit}
                                 disabled={isSaving}
                             >
                                 {isSaving ? "Guardando..." : "Guardar cambios"}
@@ -210,6 +219,7 @@ const ProductsUpdate = () => {
                                 type="button"
                                 onClick={() => navigate("/admin/products")}
                                 disabled={isSaving}
+                                className={Style.buttonCancel}
                             >
                                 Cancelar
                             </button>

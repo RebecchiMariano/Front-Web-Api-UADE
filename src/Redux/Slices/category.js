@@ -49,8 +49,6 @@ export const fetchCategories = createAsyncThunk(
         }
       }
 
-      console.log('[category] fetchCategories - status', res.status, 'raw:', rawText, 'parsed:', data);
-
       // Algunos backends envuelven la lista dentro de { data: [...] } u otro campo
       let list = data;
       if (data && !Array.isArray(data) && Array.isArray(data.data)) list = data.data;
