@@ -17,6 +17,7 @@ import AdminProducts from "./Pages/Admin/Products";
 import AdminOrders from "./Pages/Admin/Orders";
 import AdminProductsCreate from "./Pages/Admin/ProductsCreate";
 import AdminProductsUpdate from "./Pages/Admin/ProductsUpdate";
+import AdminCategoryCreate from "./Pages/Admin/CategoriCreate";
 import Logout from "./Pages/Website/Logout";
 
 const router = createBrowserRouter([
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
           {
             path: "orders",
             element: <AdminOrders />,
+          },
+          {
+            path: "categories/create",
+            element: <AdminCategoryCreate />,
           },
         ],
       },

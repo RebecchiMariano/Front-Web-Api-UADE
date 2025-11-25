@@ -78,6 +78,36 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
+
+// =====================================================
+// CREAR CATEGORÍA
+// =====================================================
+export const createCategory = createAsyncThunk(
+  'category/createCategory',
+  async ({ payload, accessToken }, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`${API_BASE}/categorias/crear`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const text = await res.text();
+      let body;
+      try { body = JSON.parse(text); } catch { body = { message: text }; }
+
+      if (!res.ok) throw new Error(body.message || `Error ${res.status}`);
+
+      return body;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 const initialState = {
   categories: [],
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
@@ -119,6 +149,22 @@ const categorySlice = createSlice({
         state.status = 'failed';
         state.error = action.payload === 'cancelled' ? null : action.payload;
       });
+
+      // CREAR CATEGORÍA
+      builder
+        .addCase(createCategory.pending, (state) => {
+          state.status = 'loading';
+          state.error = null;
+        })
+        .addCase(createCategory.fulfilled, (state, action) => {
+          state.status = 'succeeded';
+          state.categories = [...state.categories, { id: action.payload.id, nombre: action.payload.nombre, estado: action.payload.estado }];
+          state.error = null;
+        })
+        .addCase(createCategory.rejected, (state, action) => {
+          state.status = 'failed';
+          state.error = action.payload;
+        });
   },
 });
 

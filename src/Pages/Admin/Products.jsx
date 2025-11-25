@@ -93,6 +93,13 @@ const AdminProducts = () => {
             >
               Crear Nuevo Producto
             </Link>
+            <Link
+              to="/admin/categories/create"
+              className={Style.createButton}
+              style={{ marginLeft: '0.75rem' }}
+            >
+              Crear Nueva Categoría
+            </Link>
           </header>
 
           <ul>
