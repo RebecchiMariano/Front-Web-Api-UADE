@@ -24,7 +24,6 @@ const ProductsUpdate = () => {
     const updateStatus = useSelector((state) => state.product.updateStatus);
     const error = useSelector((state) => state.product.detailError);
 
-    // Estado local para el formulario, inicializado después de cargar el producto
     const [form, setForm] = useState({
         nombre: "",
         descripcion: "",
@@ -36,17 +35,14 @@ const ProductsUpdate = () => {
         foto: "",
     });
 
-    // 2. Efecto para cargar el Producto y las Categorías
     useEffect(() => {
         if (id && user?.accessToken) {
             dispatch(fetchProductById({ id, accessToken: user.accessToken }));
-            // Disparar la carga de categorías (si aún no están)
             dispatch(fetchCategories(user.accessToken));
         }
     }, [id, user?.accessToken, dispatch]);
 
 
-    // 3. Efecto para inicializar el formulario cuando el producto se carga de Redux
     useEffect(() => {
         if (selectedProduct) {
             setForm({
@@ -98,8 +94,6 @@ const ProductsUpdate = () => {
 
     const isLoading = status === 'loading';
     const isSaving = updateStatus === 'loading';
-
-    // Renderizado basado en estado de Redux
     if (isLoading) return <div className={Style.mainProduct}>Cargando producto...</div>;
     if (status === 'failed') return <div className={Style.mainProduct}>Error: {error}</div>;
     if (!selectedProduct) return <div className={Style.mainProduct}>Producto no encontrado</div>;

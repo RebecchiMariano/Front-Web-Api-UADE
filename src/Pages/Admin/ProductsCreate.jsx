@@ -7,8 +7,6 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-// 🟢 Importar correctamente del slice de productos
 import { fetchCategories, createProduct } from "../../Redux/Slices/product";
 
 const productSchema = z.object({

@@ -18,14 +18,11 @@ const AdminOrders = () => {
     style: "currency",
     currency: "ARS",
   });
-
-  // Verificación de permisos - DECODIFICANDO EL TOKEN
   useEffect(() => {
     if (user?.accessToken) {
       try {
         const decoded = jwtDecode(user.accessToken);
         const roles = decoded?.roles || [];
-        // Verificar si tiene ROLE_ADMINISTRADOR
         if (!roles.includes("ROLE_ADMINISTRADOR")) {
           Swal.fire({
             title: 'Acceso denegado',
@@ -37,8 +34,6 @@ const AdminOrders = () => {
           });
           return;
         }
-
-        // Si tiene acceso, marcamos como true
         setUserHasAccess(true);
 
       } catch (err) {
@@ -92,8 +87,6 @@ const AdminOrders = () => {
         return status;
     }
   };
-
-  // Fetch orders - solo si el usuario tiene acceso
   useEffect(() => {
     const fetchOrders = async () => {
       if (!userHasAccess) return;
@@ -192,7 +185,6 @@ const AdminOrders = () => {
     }
   };
 
-  // Mostrar loading mientras verificamos permisos
   if (!userHasAccess && user?.accessToken) {
     return <div className={Style.ordersMain}>Verificando permisos...</div>;
   }

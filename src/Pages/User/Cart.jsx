@@ -105,8 +105,6 @@ const Cart = () => {
         }
     };
 
-    const esComprador = () => { /* ... (Lógica de rol, se mantiene) ... */ };
-
     const isLoading = cartStatus === 'loading';
     const isUpdating = cartStatus === 'loading';
     const isCheckingOut = cartStatus === 'checkingOut';
@@ -134,7 +132,6 @@ const Cart = () => {
                         {cartItems.map((item) => (
 
                             <div key={item.id} className={Style.cartItem}>
-                                {console.log(item)}
                                 <div className={Style.itemImage}>
                                     <img
                                         src={item.foto || "/img/default.jpg"}

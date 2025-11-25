@@ -32,13 +32,10 @@ const Profile = () => {
 
             setLoading(true);
             try {
-                // 1. Decodificar el token para obtener el ID
                 const decoded = jwtDecode(user.accessToken);
-                // **ASUME que el ID está en 'id' o en 'sub' (email).**
                 const userEmail = decoded.sub;
                 if (!userEmail) throw new Error("Email de usuario no encontrado en el token.");
                 
-                // 2. Usar el endpoint GET /usuarios/{id}
                 const res = await fetch(`http://localhost:8080/usuarios/email/${userEmail}`, {
                     headers: {
                         'Authorization': `Bearer ${user.accessToken}`,
@@ -84,7 +81,6 @@ const Profile = () => {
         fetchUserData();
     }, [user]);
 
-    // Obtener órdenes del usuario
     const fetchUserOrders = async () => {
         if (!user?.accessToken) return;
 
@@ -99,9 +95,7 @@ const Profile = () => {
 
             if (res.ok) {
                 const orders = await res.json();
-                // Filtrar solo órdenes confirmadas (excluir carrito pendiente)
                 const confirmedOrders = orders.filter(order => order.estado === 'CONFIRMADA');
-                console.log("Órdenes confirmadas del usuario:", confirmedOrders);
                 setUserOrders(confirmedOrders);
             }
         } catch (error) {
@@ -115,7 +109,6 @@ const Profile = () => {
         fetchUserOrders();
     }, [user]);
 
-    // Manejar cambios en el formulario
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({
@@ -124,13 +117,11 @@ const Profile = () => {
         }));
     };
 
-    // Guardar cambios del perfil
 const handleSaveProfile = async () => {
         if (!user?.accessToken) return;
 
-        // 1. Obtener ID del usuario del token
         const decoded = jwtDecode(user.accessToken);
-        const userId = decoded.id || decoded.sub; // Debe coincidir con el campo usado arriba
+        const userId = decoded.id || decoded.sub;
 
         if (!userId) {
             Swal.fire({ title: 'Error', text: 'No se pudo obtener el ID de usuario para actualizar.', icon: 'error' });
@@ -139,14 +130,12 @@ const handleSaveProfile = async () => {
 
         setSaving(true);
         try {
-            // 2. Usar el endpoint PUT /usuarios/editar/{id}
             const res = await fetch(`http://localhost:8080/usuarios/editar/${userId}`, {
                 method: "PUT",
                 headers: {
                     'Authorization': `Bearer ${user.accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                // El body (form) debe coincidir con el DTO UsuarioUpdateRequest esperado por el backend
                 body: JSON.stringify(form)
             });
 
@@ -157,7 +146,6 @@ const handleSaveProfile = async () => {
 
             const updatedUser = await res.json();
             
-            // Si la actualización fue exitosa, actualiza el estado del perfil
             setUserData(updatedUser);
             setEditing(false);
 
@@ -183,7 +171,6 @@ const handleSaveProfile = async () => {
         }
     };
 
-    // Cancelar edición
     const handleCancelEdit = () => {
         setForm({
             nombre: userData?.nombre || "",
@@ -194,7 +181,6 @@ const handleSaveProfile = async () => {
         setEditing(false);
     };
 
-    // Formatear fecha
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('es-AR', {
             year: 'numeric',
@@ -203,7 +189,6 @@ const handleSaveProfile = async () => {
         });
     };
 
-    // Obtener rol del usuario
     const getUserRole = () => {
         if (!user?.accessToken) return "Usuario";
 
@@ -299,29 +284,6 @@ const handleSaveProfile = async () => {
                                         placeholder="tu@email.com"
                                     />
                                 </div>
-
-                                <div className={Style.formGroup}>
-                                    <label>Teléfono</label>
-                                    <input
-                                        type="tel"
-                                        name="telefono"
-                                        value={form.telefono}
-                                        onChange={handleInputChange}
-                                        placeholder="+54 11 1234-5678"
-                                    />
-                                </div>
-
-                                <div className={Style.formGroup}>
-                                    <label>Dirección</label>
-                                    <textarea
-                                        name="direccion"
-                                        value={form.direccion}
-                                        onChange={handleInputChange}
-                                        placeholder="Tu dirección completa"
-                                        rows="3"
-                                    />
-                                </div>
-
                                 <div className={Style.formActions}>
                                     <button
                                         onClick={handleSaveProfile}

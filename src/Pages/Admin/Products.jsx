@@ -53,7 +53,6 @@ const AdminProducts = () => {
         });
 
         if (!res.ok) throw new Error(`Status ${res.status}`);
-        // Refrescar la lista de productos
         
         dispatch(fetchProducts({ accessToken: user.accessToken }));
 

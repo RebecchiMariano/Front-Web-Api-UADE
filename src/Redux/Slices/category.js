@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 
-// Endpoint base (puedes moverlo a .env más adelante)
 const API_BASE = 'http://localhost:8080';
 
 
@@ -10,11 +9,8 @@ export const fetchCategories = createAsyncThunk(
     try {
       const controller = new AbortController();
       signal.addEventListener('abort', () => controller.abort());
-      // Obtener token (si existe) desde el state para endpoints protegidos
       const token = getState()?.user?.value?.accessToken;
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
-      console.log('[category] fetchCategories - iniciando petición a', `${API_BASE}/categorias/`, { tokenPresent: !!token });
 
       const res = await fetch(`${API_BASE}/categorias/`, { signal: controller.signal, headers });
       if (!res.ok) {
@@ -24,32 +20,26 @@ export const fetchCategories = createAsyncThunk(
           const json = text && JSON.parse(text);
           msg = (json && (json.message || json.error)) || text;
         } catch (e) {
-          // not json -> keep text
         }
         throw new Error(msg || Error `${res.status}`);
       }
 
-      // Intentar parsear JSON (y también guardar raw para debugging)
       const rawText = await res.clone().text().catch(() => null);
       let data;
       try {
         data = rawText ? JSON.parse(rawText) : null;
       } catch (e) {
-        // no-json
         data = null;
       }
 
-      // Si no pudimos parsear por JSON, intentar usar res.json() (seguros)
       if (data === null) {
         try {
           data = await res.json();
         } catch (e) {
-          // dejar data como null si tampoco funciona
           data = null;
         }
       }
 
-      // Algunos backends envuelven la lista dentro de { data: [...] } u otro campo
       let list = data;
       if (data && !Array.isArray(data) && Array.isArray(data.data)) list = data.data;
 
@@ -57,7 +47,6 @@ export const fetchCategories = createAsyncThunk(
         throw new Error('Respuesta de categorías inválida');
       }
 
-      // Filtrar solo activas y normalizar formato
       const active = list
         .filter(c => c && String(c.estado).toUpperCase() === 'ACTIVO')
         .map(c => ({
@@ -68,7 +57,6 @@ export const fetchCategories = createAsyncThunk(
 
       return active;
     } catch (err) {
-      // Si fue abortado, propagar como rechazo "aborted" (opcional)
       if (err.name === 'AbortError') {
         return rejectWithValue('cancelled');
       }
@@ -78,10 +66,6 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
-
-// =====================================================
-// CREAR CATEGORÍA
-// =====================================================
 export const createCategory = createAsyncThunk(
   'category/createCategory',
   async ({ payload, accessToken }, { rejectWithValue }) => {
@@ -110,9 +94,9 @@ export const createCategory = createAsyncThunk(
 
 const initialState = {
   categories: [],
-  status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: 'idle',
   error: null,
-  lastFetched: null, // timestamp opcional para caching
+  lastFetched: null,
 };
 
 const categorySlice = createSlice({
@@ -125,7 +109,6 @@ const categorySlice = createSlice({
       state.error = null;
       state.lastFetched = null;
     },
-    // opcional: setCategories para tests o bootstrap desde SSR
     setCategories(state, action) {
       state.categories = action.payload;
       state.status = 'succeeded';
@@ -150,7 +133,6 @@ const categorySlice = createSlice({
         state.error = action.payload === 'cancelled' ? null : action.payload;
       });
 
-      // CREAR CATEGORÍA
       builder
         .addCase(createCategory.pending, (state) => {
           state.status = 'loading';
@@ -170,7 +152,6 @@ const categorySlice = createSlice({
 
 export const { clearCategories, setCategories } = categorySlice.actions;
 
-// Selectores
 export const selectCategoryState = (state) => state.category || initialState;
 export const selectAllCategories = createSelector(
   selectCategoryState,

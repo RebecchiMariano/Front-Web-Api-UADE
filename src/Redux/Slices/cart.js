@@ -1,9 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// ====================================================================
-// THUNKS ASÍNCRONOS
-// ====================================================================
-
 export const fetchCartAsync = createAsyncThunk(
   'cart/fetchCart',
   async (accessToken, { rejectWithValue }) => {
@@ -49,7 +45,6 @@ export const addToCartAsync = createAsyncThunk(
       }
 
       let cart = await dispatch(fetchCartAsync(accessToken));
-      console.log(cart);
 
       return { cart };
 
